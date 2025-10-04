@@ -1,0 +1,145 @@
+.register-container {
+  background: #f3f3f3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-bar {
+  width: 100%;
+  height: 60px;
+  background: #e6e6e6;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 2px solid #0ea5e9;
+}
+
+.logo {
+  background: #ccc;
+  padding: 5px 15px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.register-box {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 380px;
+  margin-top: 40px;
+}
+
+.type-toggle {
+  display: flex;
+  background: #e6e6e6;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.type-toggle button {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.type-toggle button.active {
+  background: #ef4444;
+  color: #fff;
+}
+
+.title {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 15px 0 20px;
+}
+
+.label {
+  color: #ef4444;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 3px;
+  display: block;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+.input:focus {
+  border-color: #0ea5e9;
+}
+
+.upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.upload-label {
+  background: #f9f9f9;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  color: #555;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.upload input {
+  display: none;
+}
+
+.btn {
+  width: 100%;
+  background: #ef4444;
+  color: white;
+  font-weight: 600;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background: #e03535;
+}
+.btn:disabled {
+  background: #f87171;
+  cursor: not-allowed;
+}
+.note {
+  text-align: center;
+  font-size: 13px;
+  margin-top: 10px;
+  color: #333;
+}
+
+.link {
+  color: #ef4444;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
