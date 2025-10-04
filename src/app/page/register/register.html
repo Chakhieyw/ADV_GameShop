@@ -1,0 +1,74 @@
+<div class="register-container">
+  <!-- โลโก้ -->
+  <div class="logo-bar">
+    <div class="logo">Logo</div>
+  </div>
+
+  <!-- กล่องฟอร์ม -->
+  <div class="register-box">
+    <!-- แถบเลือกผู้ใช้/แอดมิน -->
+    <div class="type-toggle">
+      <button
+        [class.active]="userType() === 'user'"
+        (click)="selectType('user')"
+      >
+        ผู้ใช้งาน
+      </button>
+      <button
+        [class.active]="userType() === 'admin'"
+        (click)="selectType('admin')"
+      >
+        แอดมิน
+      </button>
+    </div>
+
+    <h2 class="title">ลงทะเบียน</h2>
+
+    <form (submit)="onRegister($event)">
+      <label class="label">Username</label>
+      <input
+        class="input"
+        type="text"
+        [ngModel]="username()"
+        (ngModelChange)="username.set($event)"
+        name="username"
+        required
+      />
+
+      <label class="label">Email</label>
+      <input
+        class="input"
+        type="email"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event.trim())"
+        name="email"
+        required
+      />
+
+      <label class="label">Password</label>
+      <input
+        class="input"
+        type="password"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
+        name="password"
+        required
+      />
+
+      <div class="upload">
+        <label class="upload-label">
+          <input type="file" (change)="onFileSelected($event)" />
+          <span>แนบไฟล์: รูปโปรไฟล์ เช่น user01.png</span>
+        </label>
+      </div>
+
+      <button class="btn">ลงทะเบียน</button>
+    </form>
+
+    <!-- ✅ เพิ่มส่วนล่างนี้ -->
+    <p class="note">
+      หากคุณมีบัญชีอยู่แล้ว
+      <a routerLink="/login" class="link">กลับไปเข้าสู่ระบบ</a>
+    </p>
+  </div>
+</div>

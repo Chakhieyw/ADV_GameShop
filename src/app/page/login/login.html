@@ -1,0 +1,38 @@
+<div class="login-container">
+  <div class="logo-bar">
+    <div class="logo">Logo</div>
+  </div>
+
+  <div class="login-box">
+    <h2 class="title">Login</h2>
+
+    <form (submit)="onLogin($event)">
+      <label class="label">Email</label>
+      <input
+        class="input"
+        type="email"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event.trim())"
+        name="email"
+        required
+      />
+
+      <label class="label">Password</label>
+      <input
+        class="input"
+        type="password"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
+        name="password"
+        required
+      />
+
+      <button class="btn">เข้าสู่ระบบ</button>
+    </form>
+
+    <p class="note">
+      หากคุณยังไม่มีบัญชี
+      <a routerLink="/register" class="link">สมัครสมาชิกเลย</a>
+    </p>
+  </div>
+</div>

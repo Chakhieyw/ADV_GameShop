@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "flutter-delivery-2ef38"
-  }
+    "default": "adv-gameshop"
+  },
+  "targets": {},
+  "etags": {}
 }
