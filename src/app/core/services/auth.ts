@@ -1,43 +1,71 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@angular/fire/auth';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from '@angular/fire/auth';
 import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
-import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
+import {
+  Storage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from '@angular/fire/storage';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   constructor(
     private auth: Auth,
     private firestore: Firestore,
-    private storage: Storage
+    private storage: Storage // ✅ ใช้ Storage จาก AngularFire
   ) {}
 
-  // ✅ สมัครสมาชิก + บันทึก Firestore
-  async register(username: string, email: string, password: string, file?: File) {
-    // สร้าง user ใน Firebase Auth
-    const cred = await createUserWithEmailAndPassword(this.auth, email, password);
+  // ✅ สมัครสมาชิก + อัปโหลดรูป + คืน userCredential
+  async register(
+    username: string,
+    email: string,
+    password: string,
+    file?: File
+  ) {
+    const cred = await createUserWithEmailAndPassword(
+      this.auth,
+      email,
+      password
+    );
     const uid = cred.user.uid;
 
-    // ถ้ามีรูป -> อัปโหลดไป Storage
-    let photoURL = '';
+    let avatarUrl = '';
     if (file) {
       const path = `profile/${uid}/${file.name}`;
       const storageRef = ref(this.storage, path);
       await uploadBytes(storageRef, file);
-      photoURL = await getDownloadURL(storageRef);
+      avatarUrl = await getDownloadURL(storageRef);
     }
 
-    // บันทึกข้อมูลใน Firestore
-    const userRef = doc(this.firestore, 'users', uid);
+    // คืนค่า userCredential + แนบ avatarUrl เพื่อให้ component ใช้ต่อได้
+    return { user: cred.user, avatarUrl };
+  }
+
+  // ✅ ฟังก์ชันบันทึกข้อมูลเพิ่มใน Firestore
+  async saveUserToDB(userData: {
+    uid: string;
+    username: string;
+    email: string;
+    userType: string;
+    avatar?: string | null;
+  }) {
+    const userRef = doc(this.firestore, 'users', userData.uid);
     await setDoc(userRef, {
-      uid,
-      username,
-      email,
-      photoURL,
+      uid: userData.uid,
+      username: userData.username,
+      email: userData.email,
+      photoURL: userData.avatar || '',
+      userType: userData.userType,
       createdAt: new Date(),
-      role: 'user'
     });
 
-    return cred.user;
+    await signOut(this.auth);
   }
 
   // ✅ ล็อกอิน + ดึงข้อมูล Firestore

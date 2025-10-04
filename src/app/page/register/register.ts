@@ -38,15 +38,26 @@ export class Register {
     }
 
     try {
-      await this.auth.register(
+      // สมัครสมาชิก
+      const userCredential = await this.auth.register(
         this.username(),
         emailValue,
         this.password(),
         this.file
       );
 
+      // เก็บข้อมูลลง Firebase DB
+      // สมมติว่า auth.register คืนค่า userCredential ที่มี user.uid
+      await this.auth.saveUserToDB({
+        uid: userCredential.user.uid,
+        username: this.username(),
+        email: emailValue,
+        userType: this.userType(),
+        avatar: (userCredential as any).avatarUrl || null // ถ้ามี url รูป
+      });
+
       alert('สมัครสมาชิกสำเร็จ 🎉');
-      this.router.navigate(['/login']); // ✅ ไปหน้า login ทันที
+      this.router.navigate(['/login']); 
     } catch (err: any) {
       if (err.code === 'auth/email-already-in-use') {
         alert('อีเมลนี้ถูกใช้ไปแล้ว กรุณาใช้อีเมลอื่นครับ ✉️');
@@ -57,8 +68,8 @@ export class Register {
       }
     }
   }
-
   selectType(type: 'user' | 'admin') {
     this.userType.set(type);
   }
+
 }

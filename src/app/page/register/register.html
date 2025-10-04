@@ -24,7 +24,7 @@
 
     <h2 class="title">ลงทะเบียน</h2>
 
-    <form (submit)="onRegister($event)">
+    <form>
       <label class="label">Username</label>
       <input
         class="input"
@@ -62,7 +62,7 @@
         </label>
       </div>
 
-      <button class="btn">ลงทะเบียน</button>
+      <button (click)="onRegister($event)" class="btn">ลงทะเบียน</button>
     </form>
 
     <!-- ✅ เพิ่มส่วนล่างนี้ -->
