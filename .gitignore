@@ -40,3 +40,8 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# 🔒 Hide secret or private config files
+.env
+src/app/firebase.config.ts
+src/environments/environment*.ts
