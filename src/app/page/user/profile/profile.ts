@@ -26,8 +26,8 @@ export class Profile implements OnInit {
 
   constructor(private auth: AuthService, private router: Router) {}
 
+   //ใช้ isLoggedIn()
   async ngOnInit() {
-    // ✅ วิธีที่ 1: ใช้ isLoggedIn()
   if (!this.auth.isLoggedIn()) {
     console.log('Not logged in, redirecting to login');
     this.router.navigate(['/login']);
