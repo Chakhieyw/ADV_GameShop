@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './login.html',
-  styleUrls: ['./login.scss']
+  styleUrls: ['./login.scss'],
 })
 export class Login {
   email = signal('');
@@ -19,18 +19,11 @@ export class Login {
   constructor(private auth: AuthService, private router: Router) {}
 
   async ngOnInit() {
-    // ✅ ใช้ waitForAuthCheck() เพื่อรอให้ auth state พร้อม
     const isLoggedIn = await this.auth.waitForAuthCheck();
-    
     if (isLoggedIn) {
       console.log('ล็อกอินอยู่แล้ว กำลังล้าง session...');
-      
-      // ✅ ล็อกเอาท์ให้หมดจริงๆ
       await this.auth.logout();
-      
-      // ✅ รอให้ Firebase อัพเดท state
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       console.log('✅ Session cleared, ready for new login');
     }
   }
@@ -41,16 +34,11 @@ export class Login {
     const emailValue = this.email().trim();
     const passwordValue = this.password().trim();
 
-    console.log('🧩 Email:', emailValue);
-    console.log('🔑 Password:', passwordValue);
-
-
     if (!emailValue || !passwordValue) {
       alert('กรุณากรอกอีเมลและรหัสผ่านให้ครบถ้วน');
       return;
     }
 
-    // ✅ ตรวจสอบรูปแบบอีเมลก่อนส่ง
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(emailValue)) {
       alert('อีเมลไม่ถูกต้อง ✉️');
@@ -58,30 +46,34 @@ export class Login {
     }
 
     try {
-      // ✅ login ผ่าน Firebase และดึงข้อมูลจาก Firestore
+      // 🔹 ล็อกอินผ่าน Firebase + ดึงข้อมูลจาก Firestore
       const userData = await this.auth.login(emailValue, passwordValue);
       if (!userData) throw new Error('ไม่สามารถเข้าสู่ระบบได้');
 
-      alert(`ยินดีต้อนรับ ${userData.username} 🎮`);
-      this.router.navigate(['/user/home']);
+      console.log('👤 ข้อมูลผู้ใช้:', userData);
 
+      // 🔹 ตรวจสอบ userType แล้วส่งไปหน้าที่เหมาะสม
+      if (userData.userType === 'admin') {
+        alert(`ยินดีต้อนรับผู้ดูแลระบบ ${userData.username} 🧑‍💻`);
+        this.router.navigate(['/admin/home']);
+      } else if (userData.userType === 'user') {
+        alert(`ยินดีต้อนรับ ${userData.username} 🎮`);
+        this.router.navigate(['/user/home']);
+      } else {
+        alert('ไม่พบประเภทผู้ใช้ที่ถูกต้อง ❌');
+      }
     } catch (err: any) {
-      // ✅ จัดการ error แบบละเอียด
-      // const msgMap: Record<string, string> = {
-      //   'auth/user-not-found': 'ไม่พบบัญชีผู้ใช้นี้ ❌',
-      //   'auth/wrong-password': 'รหัสผ่านไม่ถูกต้อง ❌',
-      //   'auth/invalid-email': 'อีเมลไม่ถูกต้อง ❌',
-      //   'auth/invalid-credential': 'ข้อมูลรับรองไม่ถูกต้อง ❌',
-      // };
-
-      // const msg = msgMap[err.code] || `เกิดข้อผิดพลาด: ${err.message}`;
-      // alert(msg);
       if (err.code === 'auth/user-not-found') {
         alert('ไม่พบบัญชีผู้ใช้นี้ ❌');
-      } else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-email' || err.code === 'auth/invalid-credential') {
+      } else if (
+        err.code === 'auth/wrong-password' ||
+        err.code === 'auth/invalid-email' ||
+        err.code === 'auth/invalid-credential'
+      ) {
         alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง ❌');
+      } else {
+        alert(`เกิดข้อผิดพลาด: ${err.message}`);
       }
-     
     }
   }
 }
