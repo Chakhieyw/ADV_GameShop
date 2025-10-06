@@ -52,11 +52,13 @@ export class Login {
 
       console.log('👤 ข้อมูลผู้ใช้:', userData);
 
-      // 🔹 ตรวจสอบ userType แล้วส่งไปหน้าที่เหมาะสม
-      if (userData.userType === 'admin') {
+      // 🔹 รองรับเฉพาะ role
+      const role = userData.role;
+
+      if (role === 'admin') {
         alert(`ยินดีต้อนรับผู้ดูแลระบบ ${userData.username} 🧑‍💻`);
         this.router.navigate(['/admin/home']);
-      } else if (userData.userType === 'user') {
+      } else if (role === 'user') {
         alert(`ยินดีต้อนรับ ${userData.username} 🎮`);
         this.router.navigate(['/user/home']);
       } else {

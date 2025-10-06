@@ -23,6 +23,7 @@ import {
   uploadBytes,
   getDownloadURL,
 } from '@angular/fire/storage';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
   private authChecked = signal(false); // ✅ เพิ่ม signal เพื่อบอกว่าเช็ค auth state แล้ว
   router: any;
 
-  constructor(private auth: Auth, private firestore: Firestore) {
+  constructor(private auth: Auth, private firestore: Firestore ,private router: Router) {
     // ✅ ฟังการเปลี่ยนแปลงสถานะจาก Firebase โดยตรง
     onAuthStateChanged(this.auth, async (firebaseUser: User | null) => {
       if (firebaseUser) {
@@ -148,7 +149,7 @@ export class AuthService {
     uid: string;
     username: string;
     email: string;
-    userType: string;
+    role?: string;
     profileUrl?: string | null;
   }) {
     const userRef = doc(this.firestore, 'users', userData.uid);
@@ -157,34 +158,55 @@ export class AuthService {
       username: userData.username,
       email: userData.email,
       profileUrl: userData.profileUrl || '',
-      userType: userData.userType,
+      role: userData.role || 'user',
       createdAt: new Date(),
     });
 
     await signOut(this.auth);
   }
 
+  
   async login(email: string, password: string) {
+    // 🔹 เข้าสู่ระบบด้วย Firebase Authentication
     const cred = await signInWithEmailAndPassword(this.auth, email, password);
     const uid = cred.user.uid;
 
-    // ✅ ดึงข้อมูล Firestore ของ user
-    const snap = await getDoc(doc(this.firestore, 'users', uid));
-    if (!snap.exists()) throw new Error('ไม่พบบัญชีใน Firestore ❌');
+    // 🔹 พยายามดึงข้อมูลจาก collection "users" ก่อน
+    let snap = await getDoc(doc(this.firestore, 'users', uid));
+
+    // 🔹 ถ้าไม่เจอใน users ให้ลองใน admin
+    let roleSource = 'users';
+    if (!snap.exists()) {
+      snap = await getDoc(doc(this.firestore, 'admin', 'admin')); // สมมติเอกสารชื่อ "admin"
+      roleSource = 'admin';
+    }
+
+    if (!snap.exists()) {
+      throw new Error('ไม่พบบัญชีใน Firestore ❌');
+    }
 
     const data = snap.data() as any;
 
-    // ✅ คืนค่าข้อมูลให้ครบ รวม userType ด้วย
+    // 🔹 กำหนดข้อมูลผู้ใช้
     const userData = {
       uid,
       username: data.username || cred.user.displayName || 'ผู้ใช้ใหม่',
       email: data.email || cred.user.email,
       profileUrl: data.profileUrl || null,
-      userType: data.userType || 'user', // ✨ เพิ่มบรรทัดนี้
+      role: data.role || (roleSource === 'admin' ? 'admin' : 'user'),
     };
 
+    // 🔹 เก็บข้อมูลผู้ใช้
     this.currentUser.set(userData);
-    sessionStorage.setItem('user', JSON.stringify(userData)); // ✅ เก็บลง session ด้วย
+    sessionStorage.setItem('user', JSON.stringify(userData));
+
+    // 🔹 ส่งไปหน้า Home ตาม role
+    if (userData.role === 'admin') {
+      this.router.navigate(['/admin/home']);
+    } else {
+      this.router.navigate(['/user/home']);
+    }
+
     return userData;
   }
 
