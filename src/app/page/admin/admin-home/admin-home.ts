@@ -64,7 +64,7 @@ export class AdminHome implements OnInit, OnDestroy {
     { image: 'https://via.placeholder.com/600x250/475569/ffffff?text=Game+3' },
   ];
 
-  ngOnInit() {
+  async ngOnInit() {
     // เริ่ม auto slide
     this.slideInterval = setInterval(() => this.nextSlide(), 3000);
   }

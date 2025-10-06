@@ -1,6 +1,7 @@
 {
   "projects": {
-    "default": "adv-gameshop"
+    "default": "adv-gameshop",
+    "adv-gameshop": "adv-gameshop"
   },
   "targets": {},
   "etags": {}

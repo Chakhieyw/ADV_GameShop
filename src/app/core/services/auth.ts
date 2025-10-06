@@ -15,7 +15,6 @@ import {
   setDoc,
   getDoc,
   updateDoc,
-  getFirestore,
 } from '@angular/fire/firestore';
 import {
   Storage,
@@ -31,7 +30,11 @@ export class AuthService {
   currentUser = signal<any | null>(null);
   private authChecked = signal(false); // ✅ เพิ่ม signal เพื่อบอกว่าเช็ค auth state แล้ว
 
-  constructor(private auth: Auth, private firestore: Firestore ,private router: Router) {
+  constructor(
+    private auth: Auth,
+    private firestore: Firestore,
+    private router: Router
+  ) {
     // ✅ ฟังการเปลี่ยนแปลงสถานะจาก Firebase โดยตรง
     onAuthStateChanged(this.auth, async (firebaseUser: User | null) => {
       if (firebaseUser) {
@@ -164,49 +167,58 @@ export class AuthService {
     await signOut(this.auth);
   }
 
-  
   async login(email: string, password: string) {
-    // 🔹 เข้าสู่ระบบด้วย Firebase Authentication
-    const cred = await signInWithEmailAndPassword(this.auth, email, password);
-    const uid = cred.user.uid;
+  const cred = await signInWithEmailAndPassword(this.auth, email, password);
+  const uid = cred.user.uid;
 
-    // 🔹 พยายามดึงข้อมูลจาก collection "users" ก่อน
-    let snap = await getDoc(doc(this.firestore, 'users', uid));
+  // 🔹 1) พยายามดึงข้อมูลจาก "users" ก่อน
+  let snap = await getDoc(doc(this.firestore, 'users', uid));
+  let role = 'user';
 
-    // 🔹 ถ้าไม่เจอใน users ให้ลองใน admin
-    let roleSource = 'users';
-    if (!snap.exists()) {
-      snap = await getDoc(doc(this.firestore, 'admin', 'admin')); // สมมติเอกสารชื่อ "admin"
-      roleSource = 'admin';
-    }
+  // 🔹 2) ถ้าไม่เจอใน users → ลองค้นใน "admin"
+  if (!snap.exists()) {
+    // 🔸 ในกรณีของคุณ doc id ใน admin คือ 'admin'
+    //     ไม่ได้ใช้ uid ของ Firebase จึงต้องค้นแบบนี้
+    const adminDocRef = doc(this.firestore, 'admin', 'admin');
+    const adminSnap = await getDoc(adminDocRef);
 
-    if (!snap.exists()) {
+    if (adminSnap.exists()) {
+      snap = adminSnap;
+      role = 'admin';
+    } else {
       throw new Error('ไม่พบบัญชีใน Firestore ❌');
     }
+  }
 
-    const data = snap.data() as any;
+  // 🔹 3) อ่านข้อมูลจากเอกสารที่เจอ
+  const data = snap.data() as any;
 
-    // 🔹 กำหนดข้อมูลผู้ใช้
-    const userData = {
-      uid,
-      username: data.username || cred.user.displayName || 'ผู้ใช้ใหม่',
-      email: data.email || cred.user.email,
-      profileUrl: data.profileUrl || null,
-      role: data.role || (roleSource === 'admin' ? 'admin' : 'user'),
-    };
+  const userData = {
+    uid,
+    username: data.username || cred.user.displayName || 'ผู้ใช้ใหม่',
+    email: data.email || cred.user.email,
+    profileUrl: data.profileUrl || null,
+    role: data.role || role,
+  };
 
-    // 🔹 เก็บข้อมูลผู้ใช้
-    this.currentUser.set(userData);
-    sessionStorage.setItem('user', JSON.stringify(userData));
+  // 🔹 4) เก็บข้อมูลลงใน sessionStorage
+  sessionStorage.setItem('user', JSON.stringify(userData));
 
-    // 🔹 ส่งไปหน้า Home ตาม role
-    if (userData.role === 'admin') {
-      this.router.navigate(['/admin/home']);
-    } else {
-      this.router.navigate(['/user/home']);
-    }
+  // 🔹 5) นำทางไปหน้า Home ตาม role
+  if (userData.role === 'admin') {
+    alert(`ยินดีต้อนรับผู้ดูแลระบบ ${userData.username} 🧑‍💻`);
+    this.router.navigate(['/admin/home']);
+  } else {
+    alert(`ยินดีต้อนรับ ${userData.username} 🎮`);
+    this.router.navigate(['/user/home']);
+  }
 
-    return userData;
+  return userData;
+}
+
+  getRole(): string | null {
+    const user = this.currentUser();
+    return user ? user.role : null;
   }
 
   // ดึงข้อมูล user จาก Firestore (ถ้าต้องอัปเดตล่าสุด)
@@ -264,6 +276,7 @@ export class AuthService {
   }
 
   async logout() {
+    
     try {
       // ✅ ต้องล็อกเอาท์จาก Firebase ก่อน
       await signOut(this.auth);
