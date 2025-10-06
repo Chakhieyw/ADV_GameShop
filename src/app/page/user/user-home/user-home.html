@@ -1,0 +1,51 @@
+<div class="user-home-container">
+  <!-- โลโก้ -->
+  <div class="logo-bar">
+    <div class="logo">Logo</div>
+
+    <div class="barmenu">
+  <div class="item-bar" [routerLink]="['/user/home']">
+    <i class="fas fa-home"></i> Home
+  </div>
+ <div class="item-bar" [routerLink]="['/user/profile']">
+  <i class="fas fa-user"></i> Profile
+</div>
+
+  <div class="item-bar" [routerLink]="['/user/game-library']">
+    <i class="fas fa-gamepad"></i> Game Library
+  </div>
+  <div class="item-bar" (click)="onLogout()">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </div>
+</div>
+</div>
+
+<div class="toolbar-card">
+  <!-- Left: Cart -->
+  <div class="cart-info">
+    <i class="fas fa-cart-shopping"></i>
+    <span class="amount">0.00 ฿</span>
+  </div>
+
+  <!-- Right: Search -->
+  <div class="search-area">
+    <input type="text" placeholder="ค้นหาเกม..." />
+    
+    <select>
+      <option value="">ประเภทเกมทั้งหมด</option>
+      <option value="action">Action</option>
+      <option value="rpg">RPG</option>
+      <option value="strategy">Strategy</option>
+      <option value="sport">Sport</option>
+    </select>
+
+    <button class="search-btn">
+      <i class="fas fa-search"></i>
+    </button>
+
+   
+  </div>
+</div>
+<br>
+<br>
+<div> ยังไม่มีเกมวางขายในขณะนี้</div>

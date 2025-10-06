@@ -6,7 +6,7 @@
   <div class="login-box">
     <h2 class="title">Login</h2>
 
-    <form (submit)="onLogin($event)">
+    <form (submit)="onLogin($event)" autocomplete="off">
       <label class="label">Email</label>
       <input
         class="input"
@@ -14,6 +14,7 @@
         [ngModel]="email()"
         (ngModelChange)="email.set($event.trim())"
         name="email"
+        autocomplete="off"
         required
       />
 
@@ -24,6 +25,7 @@
         [ngModel]="password()"
         (ngModelChange)="password.set($event)"
         name="password"
+        autocomplete="new-password"
         required
       />
 

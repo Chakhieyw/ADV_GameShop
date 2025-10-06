@@ -24,7 +24,7 @@
 
     <h2 class="title">ลงทะเบียน</h2>
 
-    <form>
+    <form autocomplete="off">
       <label class="label">Username</label>
       <input
         class="input"
@@ -32,6 +32,7 @@
         [ngModel]="username()"
         (ngModelChange)="username.set($event)"
         name="username"
+        autocomplete="off"
         required
       />
 
@@ -42,6 +43,7 @@
         [ngModel]="email()"
         (ngModelChange)="email.set($event.trim())"
         name="email"
+        autocomplete="off"
         required
       />
 
@@ -52,18 +54,33 @@
         [ngModel]="password()"
         (ngModelChange)="password.set($event)"
         name="password"
+        autocomplete="new-password"
         required
       />
 
-      <div class="upload">
-        <label class="upload-label">
-          <input type="file" (change)="onFileSelected($event)" />
-          <span>แนบไฟล์: รูปโปรไฟล์ เช่น user01.png</span>
-        </label>
-      </div>
+     <div class="profile-upload">
+  <div class="profile-pic-wrapper">
+    <!-- ถ้ามีรูป preview จะโชว์ ถ้าไม่มีก็เป็นวงกลมสีเทา -->
+    <div
+      class="profile-pic"
+      [style.background-image]="
+        previewUrl() ? 'url(' + previewUrl() + ')' : 'none'
+      "
+    ></div>
 
-      <button (click)="onRegister($event)" class="btn">ลงทะเบียน</button>
-    </form>
+    <!-- ปุ่มกล้อง overlay -->
+    <label class="camera-btn">
+      <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+      <span class="camera-icon">📷</span>
+    </label>
+  </div>
+
+  <span class="hint">แนะนำ : อัพโหลด profile ของคุณด้วยภาพ .jpg หรือ .png</span>
+</div>
+
+
+          <button (click)="onRegister($event)" class="btn">ลงทะเบียน</button>
+        </form>
 
     <!-- ✅ เพิ่มส่วนล่างนี้ -->
     <p class="note">
