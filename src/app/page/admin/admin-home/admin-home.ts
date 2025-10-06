@@ -27,6 +27,31 @@ export class AdminHome implements OnInit, OnDestroy {
     }
   }
 
+  ngOnInit() {
+    // เริ่ม auto slide
+    this.slideInterval = setInterval(() => this.nextSlide(), 3000);
+
+        // ✅ ตรวจสอบการล็อกอิน
+      if (!this.auth.isLoggedIn()) {
+        this.router.navigate(['/login']);
+        alert('กรุณาทำการล็อกอินก่อนเข้าใช้งาน');
+        return;
+      }
+
+      const user = this.auth.getUserFromSession();
+      
+      // ✅ ตรวจสอบว่าเป็น admin
+      if (user.userType !== 'admin') {
+        console.log('Access denied: User is not admin');
+        this.router.navigate(['/user/home']);
+        alert('คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
+        return;
+      }
+
+      console.log('Admin user:', user.username, 'Type:', user.userType);
+      // ... โค้ดต่อไป
+  }
+
   async onLogout() {
     try {
       await this.auth.logout();
@@ -63,11 +88,6 @@ export class AdminHome implements OnInit, OnDestroy {
     { image: 'https://via.placeholder.com/600x250/64748b/ffffff?text=Game+2' },
     { image: 'https://via.placeholder.com/600x250/475569/ffffff?text=Game+3' },
   ];
-
-  ngOnInit() {
-    // เริ่ม auto slide
-    this.slideInterval = setInterval(() => this.nextSlide(), 3000);
-  }
 
   ngOnDestroy() {
     clearInterval(this.slideInterval);

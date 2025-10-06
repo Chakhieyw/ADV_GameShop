@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
@@ -9,7 +9,7 @@ import { AuthService } from '../../../core/services/auth';
   templateUrl: './manage-game.html',
   styleUrls: ['./manage-game.scss']
 })
-export class ManageGame{
+export class ManageGame implements OnInit {
   constructor(private auth: AuthService, private router: Router) {
     //  // ✅ วิธีที่ 1: ใช้ isLoggedIn()
 
@@ -24,6 +24,27 @@ export class ManageGame{
       this.router.navigate(['/login']);
       return;
     }
+  }
+  ngOnInit(): void {
+    // ✅ ตรวจสอบการล็อกอิน
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      alert('กรุณาทำการล็อกอินก่อนเข้าใช้งาน');
+      return;
+    }
+
+    const user = this.auth.getUserFromSession();
+    
+    // ✅ ตรวจสอบว่าเป็น admin
+    if (user.userType !== 'admin') {
+      console.log('Access denied: User is not admin');
+      this.router.navigate(['/user/home']);
+      alert('คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
+      return;
+    }
+
+    console.log('Admin user:', user.username, 'Type:', user.userType);
+    // ... โค้ดต่อไป
   }
    async onLogout() {
     try {

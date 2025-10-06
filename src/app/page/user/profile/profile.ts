@@ -28,17 +28,25 @@ export class Profile implements OnInit {
 
    //ใช้ isLoggedIn()
   async ngOnInit() {
-  if (!this.auth.isLoggedIn()) {
-    console.log('Not logged in, redirecting to login');
-    this.router.navigate(['/login']);
-    return;
-  } 
-  const user = this.auth.getUserFromSession();
-    console.log('User from session:', user.username);
-    if (!user.username) {
+    if (!this.auth.isLoggedIn()) {
+      console.log('Not logged in, redirecting to login');
       this.router.navigate(['/login']);
+      alert('กรุณาทำการล็อกอินก่อนเข้าใช้งาน');
+      return;
+    } 
+      const user = this.auth.getUserFromSession();
+      console.log('User from session:', user.username);
+    
+    // ✅ ตรวจสอบว่าเป็น admin
+    if (user.userType !== 'user') {
+      console.log('Access denied: User is not User');
+      this.router.navigate(['/admin/home']);
+      alert('คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
       return;
     }
+
+    console.log('User:', user.username, 'Type:', user.userType);
+    // ... โค้ดต่อไป
 
     try {
       // ✅ ดึงข้อมูลล่าสุดจาก Firestore

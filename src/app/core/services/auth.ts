@@ -29,6 +29,7 @@ export class AuthService {
   // ✅ ใช้ signal เก็บสถานะผู้ใช้
   currentUser = signal<any | null>(null);
   private authChecked = signal(false); // ✅ เพิ่ม signal เพื่อบอกว่าเช็ค auth state แล้ว
+  router: any;
 
   constructor(private auth: Auth, private firestore: Firestore) {
     // ✅ ฟังการเปลี่ยนแปลงสถานะจาก Firebase โดยตรง
@@ -214,6 +215,43 @@ export class AuthService {
       throw error;
     }
   }
+
+  // ใน AuthService
+// ✅ เพิ่ม method ตรวจสอบ userType
+getUserType(): string {
+  const user = this.getUserFromSession();
+  return user?.userType || 'user'; // default เป็น 'user'
+}
+
+// ✅ ตรวจสอบว่าเป็น admin หรือไม่
+isAdmin(): boolean {
+  return this.getUserType() === 'admin';
+}
+
+// ✅ ตรวจสอบว่าเป็น user หรือไม่
+isUser(): boolean {
+  return this.getUserType() === 'user';
+}
+
+// ✅ ตรวจสอบและ redirect ตาม role
+checkRoleAccess(): boolean {
+  const userType = this.getUserType();
+  const currentPath = window.location.pathname;
+  
+  // ถ้าเป็น user แต่พยายามเข้า admin route
+  if (userType === 'user' && currentPath.includes('/admin')) {
+    this.router.navigate(['/user/home']);
+    return false;
+  }
+  
+  // ถ้าเป็น admin แต่พยายามเข้า user route (optional)
+  if (userType === 'admin' && currentPath.includes('/user')) {
+    this.router.navigate(['/admin/dashboard']);
+    return false;
+  }
+  
+  return true;
+}
 
   // ✅ อัปโหลดรูปใหม่และอัปเดต Firestore + sessionStorage
   async updateProfilePicture(file: File): Promise<string> {
