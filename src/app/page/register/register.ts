@@ -20,15 +20,52 @@ export class Register {
   userType = signal<'user' | 'admin'>('user');
 
   constructor(private auth: AuthService, private router: Router) {}
+  previewUrl = signal<string | null>(null);
 
-  onFileSelected(event: any) {
-    this.file = event.target.files[0];
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.file = input.files[0];
+
+      // ✅ แสดง preview รูป
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl.set(reader.result as string);
+      };
+      reader.readAsDataURL(this.file);
+    }
   }
+
+  
 
   async onRegister(e: Event) {
     e.preventDefault();
 
-    const emailValue = this.email().trim();
+      if (!this.username() && !this.email() && !this.password() && !this.file) {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+      return;
+      }
+    if (!this.username().trim()) {
+      alert('กรุณากรอกชื่อผู้ใช้งาน');
+      return;
+    }
+
+    if (!this.email().trim()) {
+      alert('กรุณากรอกอีเมล');
+      return;
+    }
+
+    if (!this.password().trim()) {
+      alert('กรุณากรอกรหัสผ่าน');
+      return;
+    }
+
+    if (!this.file) {
+      alert('กรุณาแนบรูปโปรไฟล์');
+      return;
+    }
+
+const emailValue = this.email().trim();
 
     // ✅ ตรวจรูปแบบอีเมลก่อน
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,15 +75,26 @@ export class Register {
     }
 
     try {
-      await this.auth.register(
+      // สมัครสมาชิก
+      const userCredential = await this.auth.register(
         this.username(),
         emailValue,
         this.password(),
         this.file
       );
 
+      // เก็บข้อมูลลง Firebase DB
+      // สมมติว่า auth.register คืนค่า userCredential ที่มี user.uid
+      await this.auth.saveUserToDB({
+        uid: userCredential.user.uid,
+        username: this.username(),
+        email: emailValue,
+        userType: this.userType(),
+        profileUrl: userCredential.profileUrl || null // ถ้ามี url รูป
+      });
+
       alert('สมัครสมาชิกสำเร็จ 🎉');
-      this.router.navigate(['/login']); // ✅ ไปหน้า login ทันที
+      this.router.navigate(['/login']);
     } catch (err: any) {
       if (err.code === 'auth/email-already-in-use') {
         alert('อีเมลนี้ถูกใช้ไปแล้ว กรุณาใช้อีเมลอื่นครับ ✉️');
@@ -57,8 +105,8 @@ export class Register {
       }
     }
   }
-
   selectType(type: 'user' | 'admin') {
     this.userType.set(type);
   }
+
 }

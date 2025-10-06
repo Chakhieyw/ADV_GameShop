@@ -1,0 +1,79 @@
+<div class="user-home-container">
+  <div class="logo-bar">
+    <div class="logo">Logo</div>
+    <div class="barmenu">
+      <div class="item-bar">
+        <i class="fas fa-home" [routerLink]="['/user/home']"></i> Home
+      </div>
+      <div class="item-bar">
+        <i class="fas fa-user" [routerLink]="['/user/profile']"></i> Profile
+      </div>
+      <div class="item-bar">
+        <i class="fas fa-gamepad" [routerLink]="['/user/game-library']"></i> Game Library
+      </div>
+      <div class="item-bar" (click)="onLogout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </div>
+    </div>
+  </div>
+
+  <!-- 🧾 แผ่นโปรไฟล์ -->
+  <div class="profile-page">
+    <div class="profile-card">
+
+      <!-- 📸 รูปโปรไฟล์ -->
+      <div class="profile-upload">
+        <div class="profile-pic-wrapper">
+          <div
+            class="profile-pic"
+            [ngStyle]="{
+              'background-image': previewUrl()
+                ? 'url(' + previewUrl() + ')'
+                : 'none'
+            }"
+          ></div>
+
+          <!-- ปุ่มกล้อง overlay -->
+          <label class="camera-btn">
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+            <span class="camera-icon">📷</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ℹ️ ข้อมูลผู้ใช้ -->
+      <div class="profile-info">
+        <div class="info-item">
+          <span class="label">Username:</span>
+
+          <!-- แก้ไข username -->
+          <ng-container *ngIf="editingUsername(); else showUsername">
+            <input
+              type="text"
+              [(ngModel)]="usernameInput"
+              placeholder="ใส่ชื่อผู้ใช้ใหม่"
+            />
+            <button class="save-btn" (click)="saveUsername()">💾</button>
+            <button class="cancel-btn" (click)="toggleEditUsername()">❌</button>
+          </ng-container>
+
+          <ng-template #showUsername>
+            <span class="value">{{ username() }}</span>
+            <i class="fas fa-pencil-alt edit-icon" (click)="toggleEditUsername()"></i>
+          </ng-template>
+        </div>
+
+        <div class="info-item">
+          <span class="label">Email:</span>
+          <!-- ✅ แสดงอีเมลเฉยๆ ไม่มีปุ่มแก้ไข -->
+          <span class="value email-display">{{ email() }}</span>
+        </div>
+
+        <div class="history">
+          <h3>ประวัติทำรายการ</h3>
+          <p>ยังไม่มีประวัติการทำรายการ</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
