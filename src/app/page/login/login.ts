@@ -55,14 +55,14 @@ export class Login {
       // 🔹 รองรับเฉพาะ role
       const role = userData.role;
 
-      if (role === 'admin') {
+      if (userData.role === 'admin') {
         alert(`ยินดีต้อนรับผู้ดูแลระบบ ${userData.username} 🧑‍💻`);
         this.router.navigate(['/admin/home']);
-      } else if (role === 'user') {
+      } else if (userData.role === 'user') {
         alert(`ยินดีต้อนรับ ${userData.username} 🎮`);
         this.router.navigate(['/user/home']);
       } else {
-        alert('ไม่พบประเภทผู้ใช้ที่ถูกต้อง ❌');
+        alert('ไม่พบสิทธิ์ของผู้ใช้ ❌');
       }
     } catch (err: any) {
       if (err.code === 'auth/user-not-found') {

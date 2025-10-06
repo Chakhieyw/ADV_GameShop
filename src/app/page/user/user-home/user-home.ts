@@ -8,26 +8,26 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './user-home.html',
-  styleUrl: './user-home.scss'
+  styleUrl: './user-home.scss',
 })
 export class UserHome {
-
   constructor(private auth: AuthService, private router: Router) {
     //  // ✅ วิธีที่ 1: ใช้ isLoggedIn()
-  if (!this.auth.isLoggedIn()) {
-    console.log('Not logged in, redirecting to login');
-    this.router.navigate(['/login']);
-    return;
-  } 
-  const user = this.auth.getUserFromSession();
+    if (!this.auth.isLoggedIn()) {
+      console.log('Not logged in, redirecting to login');
+      this.router.navigate(['/login']);
+      return;
+    }
+    const user = this.auth.getUserFromSession();
     console.log('User from session:', user.username);
     if (!user.username) {
       this.router.navigate(['/login']);
       return;
     }
   }
+  
 
-   async onLogout() {
+  async onLogout() {
     try {
       await this.auth.logout();
       this.router.navigate(['/login']);
@@ -35,6 +35,4 @@ export class UserHome {
       console.error('Logout failed', err);
     }
   }
-
-
 }

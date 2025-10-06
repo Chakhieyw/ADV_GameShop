@@ -1,13 +1,12 @@
-// .user-home-contdainer {
-//   background: #f3f3f3;
-//   min-height: 100vh;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-// }
+.USER-home-container {
+  background: #f3f3f3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .logo-bar {
-    
   width: 100%;
   height: 60px;
   background: #e6e6e6;
@@ -23,13 +22,14 @@
   border-radius: 4px;
   font-weight: 600;
 }
+
 .barmenu {
   margin-left: 10%;
   display: flex;
-  justify-content: flex-start; /* ชิดซ้ายหรือ center ตามต้องการ */
+  justify-content: flex-start;
   align-items: center;
-  gap: 50px; /* เว้นระยะห่างระหว่างเมนู */
-  flex-wrap: nowrap; /* ไม่ให้ wrap ลงบรรทัดใหม่ */
+  gap: 50px;
+  flex-wrap: nowrap;
 }
 
 .item-bar {
@@ -38,7 +38,7 @@
   transition: color 0.3s;
 
   &:hover {
-    color: #4caf50; /* เพิ่มเอฟเฟกต์ hover */
+    color: #4caf50;
   }
 }
 
@@ -53,112 +53,212 @@
     border-radius: 16px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     display: flex;
-    align-items: flex-start;
-    gap: 30px;
-    max-width: 700px;
+    gap: 40px;
+    max-width: 800px;
     width: 100%;
+    min-height: 400px;
+  }
+}
 
+// ส่วนซ้าย: รูปโปรไฟล์และข้อมูลเงิน
+.profile-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  flex: 0 0 200px;
+
+  .profile-upload {
     .profile-pic-wrapper {
-      flex-shrink: 0;
+      position: relative;
+      width: 120px;
+      height: 120px;
 
       .profile-pic {
-        width: 120px;
-        height: 120px;
+        width: 100%;
+        height: 100%;
         border-radius: 50%;
-        background-color: #ccc; // ถ้ายังไม่มีรูป
+        border: 2px solid #ccc;
+        background-color: #cccccc;
         background-size: cover;
         background-position: center;
+        background-repeat: no-repeat;
       }
-    }
 
-    .profile-info {
-      flex: 1;
-
-      .info-item {
+      .camera-btn {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background-color: #4caf50;
         display: flex;
         align-items: center;
-        margin-bottom: 15px;
-        gap: 10px;
+        justify-content: center;
+        cursor: pointer;
+        border: 2px solid white;
 
-        .label {
-          font-weight: 500;
-          width: 80px;
+        input {
+          display: none;
         }
 
-        .value {
-          flex: 1;
-        }
-
-        .edit-icon {
-          cursor: pointer;
-          color: #4caf50;
-          &:hover {
-            color: #388e3c;
-          }
-        }
-      }
-
-      hr {
-        margin: 20px 0;
-        border: 0;
-        border-top: 1px solid #eee;
-      }
-
-      .history {
-        h3 {
-          margin-bottom: 10px;
-        }
-        p {
-          color: #888;
+        .camera-icon {
+          color: white;
+          font-size: 16px;
+          pointer-events: none;
         }
       }
     }
   }
-}
-.profile-upload {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
 
-  .profile-pic-wrapper {
-    position: relative;
-    width: 110px;
-    height: 110px;
+  .wallet-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    width: 100%;
 
-    .profile-pic {
-      width: 100%;
-      height: 100%;
+    .wallet-icon {
+      width: 40px;
+      height: 40px;
+      background: #4caf50;
       border-radius: 50%;
-      border: 2px solid #ccc;
-      background-color: #cccccc;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    .camera-btn {
-      position: absolute;
-      bottom: 0px;  // ✅ ขยับลงนิดนึง
-      right: 0px;   // ✅ ขยับเข้ามุม
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background-color: #4caf50;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      border: 2px solid white;
-
-      input {
-        display: none;
-      }
-
-      .camera-icon {
+      
+      i {
         color: white;
-        font-size: 16px;
-        pointer-events: none;
+        font-size: 20px;
+      }
+    }
+
+    .balance {
+      text-align: center;
+      
+      .balance-label {
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 5px;
+      }
+      
+      .balance-amount {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
       }
     }
   }
+
+  .topup-btn {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background: #388e3c;
+    }
+
+    i {
+      font-size: 16px;
+    }
+  }
+}
+
+// ส่วนขวา: ข้อมูลผู้ใช้และประวัติ
+.profile-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  .profile-info {
+    .info-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      gap: 10px;
+
+      .label {
+        font-weight: 500;
+        width: 80px;
+      }
+
+      .value {
+        flex: 1;
+      }
+
+      .edit-icon {
+        cursor: pointer;
+        color: #4caf50;
+        
+        &:hover {
+          color: #388e3c;
+        }
+      }
+
+      input[type="text"] {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        flex: 1;
+      }
+
+      .save-btn, .cancel-btn {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-left: 5px;
+      }
+
+      .save-btn {
+        background: #4caf50;
+        color: white;
+        
+        &:hover {
+          background: #388e3c;
+        }
+      }
+
+      .cancel-btn {
+        background: #f44336;
+        color: white;
+        
+        &:hover {
+          background: #d32f2f;
+        }
+      }
+    }
+  }
+
+  .transaction-history {
+    .history-title {
+      color: #d32f2f;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .no-history {
+      color: #888;
+      font-style: normal;
+    }
+  }
+}
+
+.email-display {
+  color: #666;
+  font-style: normal;
 }
