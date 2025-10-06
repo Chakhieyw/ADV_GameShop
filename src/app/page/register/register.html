@@ -9,16 +9,10 @@
     <!-- แถบเลือกผู้ใช้/แอดมิน -->
     <div class="type-toggle">
       <button
-        [class.active]="userType() === 'user'"
-        (click)="selectType('user')"
+        [class.active]="role() === 'user'"
+        (click)="selectRole('user')"
       >
         ผู้ใช้งาน
-      </button>
-      <button
-        [class.active]="userType() === 'admin'"
-        (click)="selectType('admin')"
-      >
-        แอดมิน
       </button>
     </div>
 

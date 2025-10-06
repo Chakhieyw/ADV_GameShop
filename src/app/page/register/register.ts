@@ -17,7 +17,7 @@ export class Register {
   email = signal('');
   password = signal('');
   file?: File;
-  userType = signal<'user' | 'admin'>('user');
+  role = signal('user');
 
   constructor(private auth: AuthService, private router: Router) {}
   previewUrl = signal<string | null>(null);
@@ -89,7 +89,7 @@ const emailValue = this.email().trim();
         uid: userCredential.user.uid,
         username: this.username(),
         email: emailValue,
-        userType: this.userType(),
+        role: this.role(),
         profileUrl: userCredential.profileUrl || null // ถ้ามี url รูป
       });
 
@@ -105,8 +105,8 @@ const emailValue = this.email().trim();
       }
     }
   }
-  selectType(type: 'user' | 'admin') {
-    this.userType.set(type);
+  selectRole(role: 'user' | 'admin') {
+    this.role.set(role);
   }
 
 }
