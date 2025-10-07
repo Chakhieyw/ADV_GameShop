@@ -35,7 +35,7 @@ export class AuthService {
     private firestore: Firestore,
     private router: Router
   ) {
-    // ✅ ฟังการเปลี่ยนแปลงสถานะจาก Firebase โดยตรง
+    // ✅ ฟังการเปลี่ยนสถานะของ Firebase
     onAuthStateChanged(this.auth, async (firebaseUser: User | null) => {
       if (firebaseUser) {
         try {
@@ -45,18 +45,18 @@ export class AuthService {
           if (snap.exists()) {
             const userData = { uid: firebaseUser.uid, ...snap.data() };
             this.currentUser.set(userData);
-            // ✅ เปลี่ยนเป็น sessionStorage
-            sessionStorage.setItem('user', JSON.stringify(userData));
+            // ✅ เก็บใน localStorage
+            localStorage.setItem('user', JSON.stringify(userData));
             console.log('Auth state changed: User logged in', userData);
           }
         } catch (error) {
           console.error('Error fetching user data:', error);
           this.currentUser.set(null);
-          sessionStorage.removeItem('user'); // ✅ ลบ session ด้วย
+          localStorage.removeItem('user');
         }
       } else {
         this.currentUser.set(null);
-        sessionStorage.removeItem('user'); // ✅ ลบ session ด้วย
+        localStorage.removeItem('user');
       }
       this.authChecked.set(true);
     });
@@ -64,18 +64,17 @@ export class AuthService {
 
   // ✅ เปลี่ยนเป็น sessionStorage
   getUserFromSession() {
-    const user = sessionStorage.getItem('user');
+    const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   }
 
   // ✅ ตรวจสอบการล็อกอินจาก session
   isLoggedIn(): boolean {
-    return !!sessionStorage.getItem('user');
+    return !!localStorage.getItem('user');
   }
 
   // ✅ ฟังก์ชันรอให้ auth state พร้อม
   async waitForAuthCheck(): Promise<boolean> {
-    // ถ้ายังไม่เช็ค auth state ให้รอ
     if (!this.authChecked()) {
       return new Promise((resolve) => {
         const checkInterval = setInterval(() => {
@@ -88,7 +87,6 @@ export class AuthService {
     }
     return this.isLoggedIn();
   }
-
   // ✅ ฟังก์ชันดึงข้อมูลผู้ใช้ปัจจุบัน
   getCurrentUser() {
     return this.currentUser();
@@ -168,54 +166,47 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-  const cred = await signInWithEmailAndPassword(this.auth, email, password);
-  const uid = cred.user.uid;
+    const cred = await signInWithEmailAndPassword(this.auth, email, password);
+    const uid = cred.user.uid;
 
-  // 🔹 1) พยายามดึงข้อมูลจาก "users" ก่อน
-  let snap = await getDoc(doc(this.firestore, 'users', uid));
-  let role = 'user';
+    let snap = await getDoc(doc(this.firestore, 'users', uid));
+    let role = 'user';
 
-  // 🔹 2) ถ้าไม่เจอใน users → ลองค้นใน "admin"
-  if (!snap.exists()) {
-    // 🔸 ในกรณีของคุณ doc id ใน admin คือ 'admin'
-    //     ไม่ได้ใช้ uid ของ Firebase จึงต้องค้นแบบนี้
-    const adminDocRef = doc(this.firestore, 'admin', 'admin');
-    const adminSnap = await getDoc(adminDocRef);
+    if (!snap.exists()) {
+      const adminDocRef = doc(this.firestore, 'admin', 'admin');
+      const adminSnap = await getDoc(adminDocRef);
 
-    if (adminSnap.exists()) {
-      snap = adminSnap;
-      role = 'admin';
-    } else {
-      throw new Error('ไม่พบบัญชีใน Firestore ❌');
+      if (adminSnap.exists()) {
+        snap = adminSnap;
+        role = 'admin';
+      } else {
+        throw new Error('ไม่พบบัญชีใน Firestore ❌');
+      }
     }
+
+    const data = snap.data() as any;
+
+    const userData = {
+      uid,
+      username: data.username || cred.user.displayName || 'ผู้ใช้ใหม่',
+      email: data.email || cred.user.email,
+      profileUrl: data.profileUrl || null,
+      role: data.role || role,
+    };
+
+    // ✅ เก็บใน localStorage
+    localStorage.setItem('user', JSON.stringify(userData));
+
+    if (userData.role === 'admin') {
+      alert(`ยินดีต้อนรับผู้ดูแลระบบ ${userData.username} 🧑‍💻`);
+      this.router.navigate(['/admin/home']);
+    } else {
+      alert(`ยินดีต้อนรับ ${userData.username} 🎮`);
+      this.router.navigate(['/user/home']);
+    }
+
+    return userData;
   }
-
-  // 🔹 3) อ่านข้อมูลจากเอกสารที่เจอ
-  const data = snap.data() as any;
-
-  const userData = {
-    uid,
-    username: data.username || cred.user.displayName || 'ผู้ใช้ใหม่',
-    email: data.email || cred.user.email,
-    profileUrl: data.profileUrl || null,
-    role: data.role || role,
-  };
-
-  // 🔹 4) เก็บข้อมูลลงใน sessionStorage
-  sessionStorage.setItem('user', JSON.stringify(userData));
-
-  // 🔹 5) นำทางไปหน้า Home ตาม role
-  if (userData.role === 'admin') {
-    alert(`ยินดีต้อนรับผู้ดูแลระบบ ${userData.username} 🧑‍💻`);
-    this.router.navigate(['/admin/home']);
-  } else {
-    alert(`ยินดีต้อนรับ ${userData.username} 🎮`);
-    this.router.navigate(['/user/home']);
-  }
-
-  return userData;
-}
-
   getRole(): string | null {
     const user = this.currentUser();
     return user ? user.role : null;
@@ -276,20 +267,16 @@ export class AuthService {
   }
 
   async logout() {
-    
     try {
-      // ✅ ต้องล็อกเอาท์จาก Firebase ก่อน
       await signOut(this.auth);
       console.log('✅ Firebase logout successful');
     } catch (e) {
       console.warn('Firebase logout failed', e);
     } finally {
-      // ✅ ล้าง state ทุกอย่าง
       this.currentUser.set(null);
-      sessionStorage.removeItem('user');
-      localStorage.removeItem('user'); // ลบด้วยเพื่อความชัวร์
-
-      console.log('✅ Local state cleared');
+      localStorage.removeItem('user'); // ✅ ล้างแค่ตอน logout
+      console.log('✅ Session cleared');
+      this.router.navigate(['/login']);
     }
   }
 }

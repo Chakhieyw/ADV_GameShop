@@ -36,15 +36,13 @@ export class Register {
     }
   }
 
-  
-
   async onRegister(e: Event) {
     e.preventDefault();
 
-      if (!this.username() && !this.email() && !this.password() && !this.file) {
-        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+    if (!this.username() && !this.email() && !this.password() && !this.file) {
+      alert('กรุณากรอกข้อมูลให้ครบถ้วน');
       return;
-      }
+    }
     if (!this.username().trim()) {
       alert('กรุณากรอกชื่อผู้ใช้งาน');
       return;
@@ -65,7 +63,7 @@ export class Register {
       return;
     }
 
-const emailValue = this.email().trim();
+    const emailValue = this.email().trim();
 
     // ✅ ตรวจรูปแบบอีเมลก่อน
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -90,7 +88,7 @@ const emailValue = this.email().trim();
         username: this.username(),
         email: emailValue,
         role: this.role(),
-        profileUrl: userCredential.profileUrl || null // ถ้ามี url รูป
+        profileUrl: userCredential.profileUrl || null, // ถ้ามี url รูป
       });
 
       alert('สมัครสมาชิกสำเร็จ 🎉');
@@ -108,5 +106,4 @@ const emailValue = this.email().trim();
   selectRole(role: 'user' | 'admin') {
     this.role.set(role);
   }
-
 }

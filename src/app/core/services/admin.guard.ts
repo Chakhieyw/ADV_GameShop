@@ -6,16 +6,16 @@ export class AdminGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(): boolean {
-    const user = JSON.parse(sessionStorage.getItem('user') || 'null');
+    // ✅ เปลี่ยนจาก sessionStorage → localStorage
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
 
-    // ✅ ถ้าไม่มีข้อมูลผู้ใช้ (เช่น logout แล้ว)
     if (!user) {
       alert('กรุณาเข้าสู่ระบบก่อน ❌');
       this.router.navigate(['/login']);
       return false;
     }
 
-    // ✅ อนุญาตเฉพาะ admin เข้า
+    // ✅ ตรวจ role
     if (user.role === 'admin') {
       return true;
     }

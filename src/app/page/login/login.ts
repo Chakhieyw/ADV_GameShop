@@ -19,12 +19,17 @@ export class Login {
   constructor(private auth: AuthService, private router: Router) {}
 
   async ngOnInit() {
+    // ✅ ถ้าเคยล็อกอินอยู่แล้ว ให้ redirect ไปหน้า role ของเขาเลย
     const isLoggedIn = await this.auth.waitForAuthCheck();
     if (isLoggedIn) {
-      console.log('ล็อกอินอยู่แล้ว กำลังล้าง session...');
-      await this.auth.logout();
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log('✅ Session cleared, ready for new login');
+      const user = this.auth.getUserFromSession();
+      console.log('🔹 พบ session เดิม:', user);
+
+      if (user.role === 'admin') {
+        this.router.navigate(['/admin/home']);
+      } else if (user.role === 'user') {
+        this.router.navigate(['/user/home']);
+      }
     }
   }
 
