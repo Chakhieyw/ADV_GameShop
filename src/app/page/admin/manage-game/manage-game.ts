@@ -1,43 +1,47 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/services/auth';
+import { Router, RouterLink,RouterModule } from '@angular/router';
+import { Firestore, collection, getDocs, deleteDoc, doc } from '@angular/fire/firestore';
+
+
 @Component({
   selector: 'app-manage-game',
   standalone: true,
-  imports: [CommonModule, RouterLink  ],
+  imports: [CommonModule, RouterLink, RouterModule],
   templateUrl: './manage-game.html',
-  styleUrls: ['./manage-game.scss']
+  styleUrls: ['./manage-game.scss'],
 })
-export class ManageGame{
-  constructor(private auth: AuthService, private router: Router) {
-    //  // ✅ วิธีที่ 1: ใช้ isLoggedIn()
+export class ManageGame {
+  games = signal<any[]>([]);
+  isLoading = signal(false);
 
-    if (!this.auth.isLoggedIn()) {
-      console.log('Not logged in, redirecting to login');
-      this.router.navigate(['/login']);
-      return;
-    }
-    const user = this.auth.getUserFromSession();
-    console.log('User from session:', user.username);
-    if (!user.username) {
-      this.router.navigate(['/login']);
-      return;
-    }
+  constructor(private firestore: Firestore, private router: Router) {}
+
+  async ngOnInit() {
+    await this.loadGames();
   }
-   async onLogout() {
-    try {
-      await this.auth.logout();
-      this.router.navigate(['/login']);
-    } catch (err) {
-      console.error('Logout failed', err);
-    }
+
+  async loadGames() {
+    this.isLoading.set(true);
+    const querySnapshot = await getDocs(collection(this.firestore, 'games'));
+    const list: any[] = [];
+    querySnapshot.forEach((snap) => list.push({ id: snap.id, ...snap.data() }));
+    this.games.set(list);
+    this.isLoading.set(false);
   }
-  games = [
-    { name: 'Game name', price: 199, category: 'Racing', releaseDate: '9/9/2568' },
-    { name: 'Game name', price: 199, category: 'Racing', releaseDate: '9/9/2568' },
-    { name: 'Game name', price: 199, category: 'Racing', releaseDate: '9/9/2568' },
-    { name: 'Game name', price: 199, category: 'Racing', releaseDate: '9/9/2568' },
-    { name: 'Game name', price: 199, category: 'Racing', releaseDate: '9/9/2568' },
-  ];
+
+  async deleteGame(id: string) {
+    if (!confirm('ต้องการลบเกมนี้หรือไม่?')) return;
+    await deleteDoc(doc(this.firestore, 'games', id));
+    alert('ลบเกมสำเร็จ ✅');
+    await this.loadGames();
+  }
+
+  goToAdd() {
+    this.router.navigate(['/admin/add-game']);
+  }
+  logout() {
+    this.router.navigate(['/login']);
+  }
+  
 }

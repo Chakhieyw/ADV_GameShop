@@ -1,56 +1,94 @@
-<!-- ✅ Header -->
-<header class="header">
-  <div class="left">
+<div class="admin-page">
+  <!-- 🔹 Navbar ด้านบน -->
+  <header class="navbar">
     <div class="logo">Logo</div>
+
     <nav class="menu">
-      <a routerLink="/admin/home"><i class="fa fa-home"></i> Home</a>
-      <a routerLink="/admin/manage-game" class="active">
+      <a
+        routerLink="/admin/home"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-home"></i> Home
+      </a>
+
+      <a
+        routerLink="/admin/manage-game"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         <i class="fa fa-gamepad"></i> Manage Game
       </a>
-      <a routerLink="/admin/discount"><i class="fa fa-tags"></i> Discount</a>
-      <a routerLink="/admin/business-history">
+
+      <a
+        routerLink="/admin/discount"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-tags"></i> Discount
+      </a>
+
+      <a
+        routerLink="/admin/business-history"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         <i class="fa fa-rotate-left"></i> Business history
       </a>
     </nav>
-  </div>
-  <button class="logout"><i class="fa fa-sign-out"></i> Logout</button>
-</header>
-<section class="manage-container">
-  <!-- ปุ่มย้อนกลับ -->
-  <div class="back-btn">
-    <i class="fa fa-arrow-left"></i>
-    <span>Home</span>
-  </div>
 
-  <!-- หัวข้อหลัก -->
-  <div class="header-bar">
-    <h2>จัดการเกม</h2>
-    <button class="add-btn">+ เพิ่มเกม</button>
-  </div>
+    <div class="logout" (click)="logout()">
+      <i class="fa fa-sign-out"></i> Logout
+    </div>
+  </header>
 
-  <!-- ตารางเกม -->
-  <div class="game-table">
-    <!-- หัวตาราง -->
-    <div class="table-header">
-      <div>รูปภาพ</div>
-      <div>ชื่อเกม</div>
-      <div>ราคา</div>
-      <div>ประเภท</div>
-      <div>วันที่วางขาย</div>
-      <div>การจัดการ</div>
+  <!-- 🔹 ส่วนเนื้อหาหลัก -->
+  <main class="content">
+    <!-- แถบหัว “จัดการเกม” -->
+    <div class="manage-header">
+      <h3>จัดการเกม</h3>
+      <button class="add-btn" (click)="goToAdd()">+ เพิ่มเกม</button>
     </div>
 
-    <!-- แถวข้อมูล -->
-    <div class="table-row" *ngFor="let game of games">
-      <div class="game-thumb"></div>
-      <div>{{ game.name }}</div>
-      <div>{{ game.price }}฿</div>
-      <div>{{ game.category }}</div>
-      <div>{{ game.releaseDate }}</div>
-      <div class="actions">
-        <button class="edit">แก้ไข</button>
-        <button class="delete">ลบ</button>
-      </div>
+    <!-- ตารางแสดงข้อมูลเกม -->
+    <div class="table-wrapper">
+      <table class="game-table">
+        <thead>
+          <tr>
+            <th>รูปภาพ</th>
+            <th>ชื่อเกม</th>
+            <th>ราคา</th>
+            <th>ประเภท</th>
+            <th>วันที่วางขาย</th>
+            <th>การจัดการ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let g of games()">
+            <td>
+              <img
+                [src]="g.imageUrl || 'https://via.placeholder.com/80x80?text=No+Image'"
+                alt="game"
+                class="game-img"
+              />
+            </td>
+            <td>{{ g.name }}</td>
+            <td>{{ g.price }} ฿</td>
+            <td>{{ g.type }}</td>
+            <td>{{ g.releaseDate || '-' }}</td>
+            <td class="actions">
+              <button
+                class="edit-btn"
+                [routerLink]="['/admin/edit-game', g.id]"
+              >
+                แก้ไข
+              </button>
+
+              <button class="delete-btn">ลบ</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </div>
-</section>
+  </main>
+</div>

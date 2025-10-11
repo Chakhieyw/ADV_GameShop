@@ -1,76 +1,103 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthService } from '../../../core/services/auth';
-import { Router } from '@angular/router';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink, RouterModule } from '@angular/router';
+import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { AuthService } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-admin-home',
-  imports: [RouterLink, CommonModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLink, RouterModule],
   templateUrl: './admin-home.html',
-  styleUrl: './admin-home.scss',
+  styleUrls: ['./admin-home.scss'],
 })
 export class AdminHome implements OnInit, OnDestroy {
-  constructor(private auth: AuthService, private router: Router) {
-    //  // ✅ วิธีที่ 1: ใช้ isLoggedIn()
-
-    if (!this.auth.isLoggedIn()) {
-      console.log('Not logged in, redirecting to login');
-      this.router.navigate(['/login']);
-      return;
-    }
-    const user = this.auth.getUserFromSession();
-    console.log('User from session:', user.username);
-    if (!user.username) {
-      this.router.navigate(['/login']);
-      return;
-    }
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private firestore: Firestore
+  ) {
+    if (!this.auth.isLoggedIn()) this.router.navigate(['/login']);
   }
 
-  async onLogout() {
-    try {
-      await this.auth.logout();
-      this.router.navigate(['/login']);
-    } catch (err) {
-      console.error('Logout failed', err);
-    }
-  }
-  categories = [
-    { name: 'FPS', games: Array(5).fill({ name: 'Game Name', price: 119 }) },
-    {
-      name: 'Action RPG',
-      games: Array(5).fill({ name: 'Game Name', price: 129 }),
-    },
-    { name: 'Racing', games: Array(5).fill({ name: 'Game Name', price: 139 }) },
-    {
-      name: 'Dungeon Crawling',
-      games: Array(5).fill({ name: 'Game Name', price: 149 }),
-    },
-  ];
-
-  topGames = [
-    { name: 'Game A', price: 199 },
-    { name: 'Game B', price: 229 },
-    { name: 'Game C', price: 259 },
-    { name: 'Game D', price: 289 },
-    { name: 'Game E', price: 319 },
-  ];
+  allGames: any[] = [];
+  categories: { name: string; games: any[] }[] = [];
+  topGames: any[] = [];
+  searchText = '';
+  selectedCategory = '';
+  slides: any[] = [];
   currentSlide = 0;
   slideInterval: any;
-
-  slides = [
-    { image: 'https://via.placeholder.com/600x250/94a3b8/ffffff?text=Game+1' },
-    { image: 'https://via.placeholder.com/600x250/64748b/ffffff?text=Game+2' },
-    { image: 'https://via.placeholder.com/600x250/475569/ffffff?text=Game+3' },
-  ];
+  showModal = false;
+  selectedGame: any = null;
 
   async ngOnInit() {
-    // เริ่ม auto slide
-    this.slideInterval = setInterval(() => this.nextSlide(), 3000);
+    await this.loadGames();
+    if (this.slides.length > 0) {
+      this.slideInterval = setInterval(() => this.nextSlide(), 3000);
+    }
   }
 
   ngOnDestroy() {
     clearInterval(this.slideInterval);
+  }
+
+  async loadGames() {
+    const querySnapshot = await getDocs(collection(this.firestore, 'games'));
+    const list: any[] = [];
+    querySnapshot.forEach((snap) => list.push({ id: snap.id, ...snap.data() }));
+    this.allGames = list;
+
+    // ✅ Top 5 เกมขายดี
+    this.topGames = [...list].sort((a, b) => b.price - a.price).slice(0, 5);
+
+    // ✅ Slides 5 เกมขายดี
+    this.slides = this.topGames.map((g) => ({
+      image: g.imageUrl || 'https://via.placeholder.com/900x250?text=No+Image',
+      name: g.name,
+      price: g.price,
+      type: g.type || 'อื่นๆ',
+    }));
+
+    // ✅ Group ตามประเภทเกม
+    const grouped: { [key: string]: any[] } = {};
+    list.forEach((g) => {
+      const type = g.type || 'อื่นๆ';
+      if (!grouped[type]) grouped[type] = [];
+      grouped[type].push(g);
+    });
+    this.categories = Object.keys(grouped).map((key) => ({
+      name: key,
+      games: grouped[key],
+    }));
+  }
+
+  async onLogout() {
+    await this.auth.logout();
+    this.router.navigate(['/login']);
+  }
+
+  applyFilter() {
+    const text = this.searchText.toLowerCase();
+    const cat = this.selectedCategory;
+    this.categories.forEach((c) => {
+      c.games = c.games.filter(
+        (g) =>
+          (!text || g.name.toLowerCase().includes(text)) &&
+          (!cat || g.type === cat)
+      );
+    });
+  }
+
+  openModal(game: any) {
+    this.selectedGame = game;
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.selectedGame = null;
   }
 
   nextSlide() {
@@ -82,7 +109,7 @@ export class AdminHome implements OnInit, OnDestroy {
       (this.currentSlide - 1 + this.slides.length) % this.slides.length;
   }
 
-  goToSlide(index: number) {
-    this.currentSlide = index;
+  goToSlide(i: number) {
+    this.currentSlide = i;
   }
 }
