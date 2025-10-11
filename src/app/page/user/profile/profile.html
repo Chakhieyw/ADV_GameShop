@@ -50,12 +50,12 @@
           </div>
           <div class="balance">
             <div class="balance-label">ยอดเงินคงเหลือ</div>
-            <div class="balance-amount">0.00 $</div>
+            <div class="balance-amount">{{ money() | currency }}</div>
           </div>
         </div>
 
         <!-- ปุ่มเติมเงิน -->
-        <button class="topup-btn">
+        <button class="topup-btn" (click)="addMoney()">
           <i class="fas fa-plus-circle"></i>
           เติมเงิน
         </button>
@@ -90,12 +90,118 @@
           </div>
         </div>
 
-        <!-- ประวัติการทำรายการ -->
-        <div class="transaction-history">
-          <h3 class="history-title">ประวัติการทำรายการ</h3>
-          <p class="no-history">ยังไม่มีประวัติการทำรายการ</p>
-        </div>
+      <!-- ประวัติการทำรายการ -->
+<div class="transaction-history">
+  <h3 class="history-title">ประวัติการทำรายการ</h3>
+
+  <!-- กำลังโหลด -->
+  <p *ngIf="loading()">กำลังโหลด...</p>
+
+  <!-- ไม่มีประวัติ -->
+  <p *ngIf="!loading() && history().length === 0" class="no-history">
+    ยังไม่มีประวัติการทำรายการ
+  </p>
+
+  <!-- รายการ history -->
+  <ul *ngIf="!loading() && history().length > 0" class="history-list">
+    <li *ngFor="let item of history()" class="history-item">
+      <div class="item-left">
+        <span class="type" [ngClass]="{'topup': item.type==='topup', 'purchase': item.type==='purchase'}">
+          {{ item.type === 'topup' ? 'เติมเงิน' : 'ซื้อเกม' }}
+        </span>
+        <span class="note" *ngIf="item.note">({{ item.note }})</span>
+      </div>
+      <div class="item-right">
+        <span class="amount" [ngClass]="{'topup': item.type==='topup', 'purchase': item.type==='purchase'}">
+          {{ item.amount | currency:'THB':'symbol':'1.0-0' }}
+        </span>
+        <span class="time">{{ item.timestamp?.toDate() | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
       </div>
     </div>
   </div>
+</div>
+
+
+
+
+
+<!-- 💬 Dialog เติมเงิน -->
+<div class="dialog-overlay" *ngIf="showDialog">
+  <div class="dialog-box">
+    <h2 class="dialog-title">บริการเติมเงิน</h2>
+
+    <!-- ปุ่มเลือกจำนวนเงิน -->
+    <div class="amount-buttons">
+      <button
+        class="amount-btn"
+        [ngClass]="{ selected: selectedAmount === 100 }"
+        (click)="selectAmount(100)"
+      >
+        100฿
+      </button>
+      <button
+        class="amount-btn"
+        [ngClass]="{ selected: selectedAmount === 200 }"
+        (click)="selectAmount(200)"
+      >
+        200฿
+      </button>
+      <button
+        class="amount-btn"
+        [ngClass]="{ selected: selectedAmount === 500 }"
+        (click)="selectAmount(500)"
+      >
+        500฿
+      </button>
+      <button
+        class="amount-btn"
+        [ngClass]="{ selected: selectedAmount === 1000 }"
+        (click)="selectAmount(1000)"
+      >
+        1000฿
+      </button>
+      <button
+        class="amount-btn"
+        [ngClass]="{ selected: customAmount }"
+        (click)="selectAmount('custom')"
+      >
+        กำหนดเอง
+      </button>
+    </div>
+
+    <!-- ช่องกรอกจำนวนเงิน -->
+    <div class="amount-input">
+      <input
+        type="number"
+        [readonly]="!customAmount"
+        placeholder="ระบุจำนวนเงิน"
+        [(ngModel)]="inputAmount"
+      />
+    </div>
+
+    <!-- ปุ่มยืนยันและยกเลิก -->
+    <div class="dialog-actions">
+  <button
+    class="confirm-btn"
+    (click)="confirmTopup()"
+    [disabled]="isProcessing"
+  >
+    <ng-container *ngIf="!isProcessing; else loading">
+      ยืนยัน
+    </ng-container>
+    <ng-template #loading>
+      <i class="fas fa-spinner fa-spin"></i> กำลังดำเนินการ...
+    </ng-template>
+  </button>
+
+  <button class="cancel-btn" (click)="closeDialog()" [disabled]="isProcessing">
+    ยกเลิก
+  </button>
+</div>
+
 </div>
