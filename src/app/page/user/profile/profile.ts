@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { OnInit } from '@angular/core';
 import { NgModule } from '@angular/core';
+import { HistoryService, HistoryItem } from '../../../core/services/history';
 
 import { FormsModule } from '@angular/forms';
 
@@ -19,12 +20,108 @@ export class Profile implements OnInit {
   email = signal('');
   file?: File;
   previewUrl = signal<string | null>(null);
+  money = signal<number>(0);
 
   // สำหรับแก้ไข inline - มีเฉพาะ username
   editingUsername = signal(false);
   usernameInput = '';
+  history = signal<HistoryItem[]>([]);
+  loading = signal(true);
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,       // ✅ ใช้ดึงข้อมูลผู้ใช้ session
+    private historyService: HistoryService, // ✅ ใช้ดึงประวัติ
+    private router: Router           // ✅ ใช้ redirect / navigation
+  ) {}
+
+    showDialog = false;
+  selectedAmount: number | null = null;
+  customAmount = false;
+  inputAmount: string = '';
+
+  isProcessing = false; // ✅ ตัวแปรสถานะโหลด
+
+  // เปิด Dialog
+  addMoney() {
+  this.showDialog = true;
+  this.selectedAmount = null;
+  this.customAmount = false;
+  this.inputAmount = '';
+}
+
+
+  // ปิด Dialog
+  closeDialog() {
+    this.showDialog = false;
+  }
+
+  // เลือกจำนวนเงิน
+  selectAmount(amount: number | 'custom') {
+    if (amount === 'custom') {
+      this.customAmount = true;
+      this.selectedAmount = null;
+      this.inputAmount = '';
+    } else {
+      this.customAmount = false;
+      this.selectedAmount = amount;
+      this.inputAmount = amount.toString();
+    }
+  }
+
+  // ยืนยันการเติมเงิน (คุณสามารถเชื่อม API ตรงนี้ได้)
+  async confirmTopup() {
+    if (this.customAmount && this.inputAmount === '') {
+      alert('กรุณากรอกจำนวนเงิน');
+      return;
+    }
+
+    const amount = Number(this.customAmount ? this.inputAmount : this.selectedAmount);
+    if (isNaN(amount) || amount <= 0) {
+      alert('กรุณากรอกจำนวนเงินที่ถูกต้อง');
+      return;
+    }
+
+    if (amount > 100000) {
+      alert('ระบบจำกัดการเติมเงินสูงสุดที่ 100,000 บาท ❌');
+      return;
+    }
+
+    if (this.isProcessing) return;
+    this.isProcessing = true;
+  
+
+    const user = this.auth.getUserFromSession();
+    if (!user) {
+      alert('ไม่พบข้อมูลผู้ใช้ในระบบ ❌');
+      this.isProcessing = false;
+      return;
+    }
+
+    this.loading.set(true);
+
+    try {
+      // ✅ ให้ auth จัดการเพิ่มยอดเอง
+      await this.auth.updateUser(user.uid, {}, amount);
+
+      await this.auth.addTopupHistory(user.uid, amount);
+
+      // ✅ อัปเดต signal ตาม session ล่าสุด
+      const updatedUser = this.auth.getUserFromSession();
+      this.money.set(updatedUser.money);
+
+      alert(`เติมเงินจำนวน ${amount} บาท สำเร็จ!`);
+      this.closeDialog();
+    } catch (error) {
+      console.error(error);
+      alert('เกิดข้อผิดพลาดในการเติมเงิน ❌');
+    } finally {
+      this.isProcessing = false;
+      this.loading.set(false);
+    }
+}
+
+
+
 
    //ใช้ isLoggedIn()
   async ngOnInit() {
@@ -43,11 +140,13 @@ export class Profile implements OnInit {
     try {
       // ✅ ดึงข้อมูลล่าสุดจาก Firestore
       const latestUser = await this.auth.fetchUser(user.uid);
-
+      const items = await this.historyService.getUserHistory(user.uid);
+      this.history.set(items);
       // อัปเดต signal
       this.username.set(latestUser['username']);
       this.email.set(latestUser['email']); // ✅ อีเมลแสดงเฉยๆ
       this.previewUrl.set(latestUser['profileUrl'] || null);
+      this.money.set(latestUser['money'] || 0);
 
       // อัปเดต input fields สำหรับ inline edit
       this.usernameInput = latestUser['username'];
@@ -59,6 +158,8 @@ export class Profile implements OnInit {
       // ถ้า fetch ไม่ได้ ให้ logout ออกไปหน้า login
       this.auth.logout();
       this.router.navigate(['/login']);
+    }finally {
+      this.loading.set(false);
     }
   }
 

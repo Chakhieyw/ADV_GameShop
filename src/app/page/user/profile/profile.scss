@@ -262,3 +262,338 @@
   color: #666;
   font-style: normal;
 }
+
+/* ===== Dialog Overlay ===== */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* ===== Dialog Box ===== */
+.dialog-box {
+  background: white;
+  max-width: 700px;
+    width: 100%;
+    min-height: 300px;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: left;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease;
+}
+
+.dialog-title {
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* ===== ปุ่มราคา ===== */
+.amount-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.amount-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+.amount-btn:hover {
+  transform: scale(1.05);
+}
+
+.amount-btn.selected {
+  background-color: #e74c3c;
+}
+
+/* ===== ช่องกรอก ===== */
+.amount-input input {
+  width: 80%;
+  padding: 10px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.amount-input input:read-only {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+/* ===== ปุ่มยืนยัน ยกเลิก ===== */
+.dialog-actions {
+  display: flex;
+  justify-content: space-around;
+}
+
+.confirm-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+.confirm-btn:hover {
+  background-color: #218838;
+}
+
+.cancel-btn {
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+.cancel-btn:hover {
+  background-color: #b3b3b3;
+}
+
+/* ===== Animation ===== */
+@keyframes fadeIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.confirm-btn[disabled],
+.cancel-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fa-spinner {
+  margin-right: 5px;
+}
+
+/* ===== Dialog Box ===== */
+.dialog-box {
+  background: #ffffff;
+  max-width: 800px;
+  width: 95%;
+  min-height: 380px;
+  border-radius: 20px;
+  padding: 40px 50px;
+  text-align: left;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.3s ease;
+  position: relative;
+}
+
+/* ===== Title ===== */
+.dialog-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #222;
+  font-weight: 700;
+  border-left: 5px solid #28a745;
+  padding-left: 15px;
+}
+
+/* ===== ปุ่มราคา ===== */
+.amount-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start; /* ชิดซ้าย */
+  margin-bottom: 25px;
+}
+
+.amount-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: 0.25s;
+  box-shadow: 0 3px 8px rgba(40, 167, 69, 0.2);
+}
+
+.amount-btn:hover {
+  transform: scale(1.07);
+}
+
+.amount-btn.selected {
+  background-color: #e74c3c;
+  box-shadow: 0 3px 8px rgba(231, 76, 60, 0.3);
+}
+
+/* ===== ช่องกรอก ===== */
+.amount-input {
+  margin-top: 10px;
+  text-align: left;
+}
+
+.amount-input input {
+  width: 70%;
+  padding: 14px;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+  margin-bottom: 25px;
+  transition: 0.2s;
+}
+
+.amount-input input:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 4px rgba(40, 167, 69, 0.3);
+}
+
+.amount-input input:read-only {
+  background-color: #f9f9f9;
+  color: #777;
+}
+
+/* ===== ปุ่มยืนยัน ยกเลิก ===== */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.confirm-btn,
+.cancel-btn {
+  border: none;
+  padding: 12px 26px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: 0.25s;
+  margin-top: 7%;
+}
+
+.confirm-btn {
+  background-color: rgb(246, 78, 111);
+  color: white;
+  box-shadow: 0 3px 10px rgba(40, 167, 69, 0.25);
+}
+
+.confirm-btn:hover {
+  background-color: rgb(233, 4, 50);
+}
+
+.cancel-btn {
+  background-color: #ddd;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #bbb;
+}
+
+/* ===== Animation ===== */
+@keyframes fadeIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.confirm-btn[disabled],
+.cancel-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fa-spinner {
+  margin-right: 8px;
+  animation: spin 1s linear infinite;
+}
+
+/* หมุนไอคอนโหลด */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.history-list {
+  max-height: 200px;       /* กำหนดความสูงให้เลื่อนได้ */
+  overflow-y: auto;        /* scroll แนวตั้ง */
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border-top: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+/* เพิ่ม spacing ระหว่าง item */
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/* สไตล์เล็กน้อยสำหรับ type และ amount */
+.history-item .type.topup {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.history-item .type.purchase {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.history-item .amount.topup {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.history-item .amount.purchase {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.history-item .time {
+  font-size: 0.85rem;
+  color: #666;
+  margin-left: 10px;
+}
+
+
+

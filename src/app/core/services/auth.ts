@@ -15,6 +15,11 @@ import {
   setDoc,
   getDoc,
   updateDoc,
+  increment,
+  collection,
+  addDoc,
+  serverTimestamp,
+  runTransaction
 } from '@angular/fire/firestore';
 import {
   Storage,
@@ -153,6 +158,7 @@ export class AuthService {
     email: string;
     role?: string;
     profileUrl?: string | null;
+    money?: number;
   }) {
     const userRef = doc(this.firestore, 'users', userData.uid);
     await setDoc(userRef, {
@@ -162,6 +168,7 @@ export class AuthService {
       profileUrl: userData.profileUrl || '',
       role: userData.role || 'user',
       createdAt: new Date(),
+      money: userData.money || 0,
     });
 
     await signOut(this.auth);
@@ -230,25 +237,39 @@ export class AuthService {
   }
 
   // ✅ อัปเดตข้อมูลผู้ใช้ใน Firestore
-  async updateUser(uid: string, data: any) {
-    try {
-      const userRef = doc(this.firestore, 'users', uid);
+async updateUser(uid: string, data: any, incrementMoney?: number) {
+  try {
+    const userRef = doc(this.firestore, 'users', uid);
+
+    // ✅ ถ้ามีการเพิ่ม/ลดยอดเงิน
+    if (incrementMoney !== undefined) {
+      await updateDoc(userRef, {
+        ...data,
+        money: increment(incrementMoney),  // <-- ใช้ increment() ปลอดภัยจาก race condition
+      });
+    } else {
       await updateDoc(userRef, data);
-
-      // อัปเดต localStorage ด้วย
-      const user = this.getUserFromSession();
-      if (user) {
-        const updated = { ...user, ...data };
-        sessionStorage.setItem('user', JSON.stringify(updated));
-      }
-
-      console.log('อัปเดตข้อมูลผู้ใช้สำเร็จ ✅');
-    } catch (error) {
-      console.error('อัปเดตข้อมูลผู้ใช้ล้มเหลว ❌', error);
-      throw error;
     }
-  }
 
+    // ✅ อัปเดต session ใน localStorage/sessionStorage
+    const user = this.getUserFromSession();
+    if (user) {
+      const updated = {
+        ...user,
+        ...data,
+        ...(incrementMoney !== undefined
+          ? { money: (user.money || 0) + incrementMoney }
+          : {}),
+      };
+      sessionStorage.setItem('user', JSON.stringify(updated));
+    }
+
+    console.log('อัปเดตข้อมูลผู้ใช้สำเร็จ ✅');
+  } catch (error) {
+    console.error('อัปเดตข้อมูลผู้ใช้ล้มเหลว ❌', error);
+    throw error;
+  }
+}
   // ✅ อัปโหลดรูปใหม่และอัปเดต Firestore + sessionStorage
   async updateProfilePicture(file: File): Promise<string> {
     const user = this.getUserFromSession();
@@ -274,6 +295,27 @@ export class AuthService {
       throw error;
     }
   }
+
+
+  async addTopupHistory(userId: string, amount: number, note: string = 'เติมเงินเข้าสู่ระบบสำเร็จ') {
+  try {
+    const historyRef = collection(this.firestore, 'history');
+
+    await addDoc(historyRef, {
+      userId,           // uid ของผู้ใช้
+      type: 'topup',    // ระบุประเภทการทำรายการ
+      amount,           // จำนวนเงิน (บวก)
+      note,             // ข้อความเพิ่มเติม
+      timestamp: serverTimestamp(), // เวลาอัตโนมัติ
+    });
+
+    console.log(`บันทึกประวัติเติมเงิน ${amount} บาท สำเร็จ ✅`);
+  } catch (error) {
+    console.error('บันทึกประวัติเติมเงินล้มเหลว ❌', error);
+    throw error;
+  }
+}
+
 
   async logout() {
     
