@@ -1,393 +1,274 @@
-:host {
-  display: block;
-  background: #f8fafc;
-  font-family: 'Prompt', sans-serif;
-  color: #0f172a;
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: "Prompt", sans-serif;
+  background: #f9fafb;
 }
 
-/* ✅ Header */
+/* ---------- Navbar ---------- */
 .header {
-  background: #ffffff;
-  border-bottom: 2px solid #e2e8f0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-
-  /* 🧩 ใช้ grid เพื่อจัด layout 3 ส่วน */
-  display: grid;
-  grid-template-columns: 200px 1fr 200px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 10px 40px;
+  background: #fff;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 0.8rem 2rem;
 
-  .left {
-    display: flex;
-    align-items: center;
-
-    .logo {
-      background: #e2e8f0;
-      color: #475569;
-      font-weight: 700;
-      font-size: 18px;
-      padding: 8px 16px;
-      border-radius: 8px;
-    }
+  .logo {
+    background: #e2e8f0;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    color: #334155;
   }
 
-  /* ✅ เมนูกลาง */
   .menu {
     display: flex;
-    justify-content: center;
-    gap: 32px;
+    gap: 1.8rem;
 
     a {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
       color: #0f172a;
+      text-decoration: none;
       font-weight: 500;
-      padding-bottom: 6px;
-      transition: color 0.2s;
+      position: relative;
 
-      i {
-        font-size: 16px;
-      }
-
+      &.active,
       &:hover {
         color: #0ea5e9;
       }
 
-
-      &:hover::after {
+      &.active::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
         width: 100%;
-      }
-
-      /* ✅ เส้นขีดเมื่อ active */
-      &.active {
-        color: #0ea5e9;
-
-        &::after {
-          width: 100%;
-        }
+        height: 3px;
+        background: #0ea5e9;
+        border-radius: 2px;
       }
     }
   }
 
-  /* ✅ Logout */
   .logout {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 6px;
-    border: none;
-    background: none;
-    color: #0f172a;
-    font-weight: 500;
+    color: #ef4444;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 15px;
-
-    i {
-      font-size: 16px;
-    }
-
     &:hover {
-      color: #ef4444;
+      color: #dc2626;
     }
   }
 }
 
-/* ✅ Container กลาง */
+/* ---------- Page Container ---------- */
 .page-container {
-  max-width: 1200px;
+  max-width: 95vw;
   margin: 0 auto;
-  padding: 20px;
+  padding: 2rem 1.5rem;
+  background: #f8fafc;
 }
 
-/* ✅ Search bar */
+/* ---------- Search Section ---------- */
 .search-section {
   display: flex;
   justify-content: flex-end;
-  padding-bottom: 12px;
+  margin-bottom: 1rem;
 
   .search-box {
     display: flex;
-    gap: 8px;
+    gap: 0.5rem;
 
-    input,
-    select {
-      padding: 6px 10px;
-      border: 1px solid #94a3b8;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #0f172a;
+    input, select {
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
       outline: none;
-
-      &:focus {
-        border-color: #0ea5e9;
-      }
     }
 
     button {
       background: #0ea5e9;
+      color: #fff;
       border: none;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 8px;
+      border-radius: 6px;
+      padding: 0 0.8rem;
       cursor: pointer;
-      transition: 0.2s;
-
-      i {
-        font-size: 16px;
-      }
-
-      &:hover {
-        background: #0284c7;
-      }
     }
   }
 }
 
-/* ✅ Carousel */
+/* ---------- Carousel ---------- */
 .carousel {
   position: relative;
   width: 100%;
-  max-width: 1100px; /* ✅ ขนาดพอดีตรงกลาง */
-  height: 350px;
-  margin: 40px auto 20px;
+  height: 220px;
+  margin: 1rem auto 2.5rem auto;
+  border-radius: 10px;
   overflow: hidden;
-  border-radius: 16px;
-  background: #e2e8f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: #cbd5e1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
-  /* 🧩 ส่วนของสไลด์ */
   .slides-container {
-    position: relative;
     width: 100%;
     height: 100%;
+    position: relative;
   }
 
   .slide {
+    display: none;
     position: absolute;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     opacity: 0;
-    transition: opacity 0.8s ease-in-out;
+    transition: opacity 0.4s ease;
 
     &.active {
+      display: block;
       opacity: 1;
-      z-index: 1;
     }
 
     img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* ✅ ให้ภาพเต็มพื้นที่แบบพอดี */
-      border-radius: 16px;
+      object-fit: cover;
+      filter: brightness(0.9);
+    }
+
+    .caption {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      padding: 10px 20px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+      color: #fff;
+      text-align: right;
+
+      h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1rem;
+      }
+
+      p {
+        margin: 3px 0 0;
+        font-size: 0.85rem;
+        color: #e2e8f0;
+      }
     }
   }
 
-  /* 🧭 ปุ่มเลื่อนซ้ายขวา */
   .nav {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     background: rgba(15, 23, 42, 0.5);
-    color: white;
+    color: #fff;
     border: none;
-    font-size: 28px;
-    padding: 6px 14px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
     cursor: pointer;
-    border-radius: 50%;
-    z-index: 3;
-    transition: background 0.25s;
+    transition: 0.2s;
 
     &:hover {
       background: rgba(15, 23, 42, 0.8);
     }
 
     &.prev {
-      left: 16px;
+      left: 10px;
     }
 
     &.next {
-      right: 16px;
+      right: 10px;
     }
   }
 
-  /* 🔴 จุด indicator */
   .dots {
-    position: absolute;
-    bottom: 14px;
-    left: 0;
-    width: 100%;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
 
     span {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      margin: 0 4px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      background: #cbd5e1;
-      transition: all 0.3s ease;
+      background: #94a3b8;
+      margin: 0 4px;
+      cursor: pointer;
+      transition: all 0.2s;
 
       &.active {
-        background: #ef4444;
-        transform: scale(1.3);
+        background: #0ea5e9;
+        transform: scale(1.2);
       }
     }
   }
 }
 
-/* ✅ Top selling */
-h2, h3 {
-  font-weight: 600;
-}
-
-/* ✅ Section 5 อันดับ */
-.top-selling {
-  padding: 20px 40px;
-
-  h2 {
-    color: #f43f5e;
-    margin-bottom: 20px;
-  }
-
-  .card-row.top {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-
-    .card {
-      background: #ffffff;
-      border-radius: 8px;
-      width: 140px;
-      text-align: center;
-      border: 2px solid transparent;
-      transition: all 0.3s ease;
-      padding: 6px 0;
-
-      /* ✅ เฉดสีตามภาพ */
-      &:nth-child(1) { border-color: #60a5fa; }
-      &:nth-child(2) { border-color: #c084fc; }
-      &:nth-child(3) { border-color: #5eead4; }
-      &:nth-child(4) { border-color: #fca5a5; }
-      &:nth-child(5) { border-color: #f9a8d4; }
-
-      &:hover {
-        transform: translateY(-3px);
-      }
-
-      .thumb {
-        background: #cbd5e1;
-        border-radius: 8px;
-        width: 100%;
-        height: 100px;
-        margin-bottom: 8px;
-      }
-
-      .info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-
-        .price {
-          color: #22c55e;
-          font-weight: bold;
-          font-size: 14px;
-        }
-
-        .name {
-          font-size: 13px;
-          color: #475569;
-        }
-
-        .cart {
-          background: none;
-          border: none;
-          color: #0ea5e9;
-          cursor: pointer;
-          font-size: 18px;
-          transition: transform 0.2s;
-
-          &:hover {
-            transform: scale(1.2);
-          }
-        }
-      }
-    }
-  }
-}
-/* ✅ Section หมวดหมู่ */
+/* ---------- Game Sections ---------- */
+.top-selling,
 .category {
-  padding: 10px 40px;
+  margin-bottom: 4rem;
 
-  h3 {
-    color: #f43f5e;
-    margin: 16px 0;
+  h2, h3 {
+    text-align: left;
+    margin: 1.5rem 0 1rem;
+    color: #ef4444;
     font-weight: 600;
+    font-size: 1.1rem;
   }
 
   .card-row {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2.5rem 2rem;
+    justify-items: center;
+  }
 
-    .card {
-      background: #ffffff;
+  .card {
+    background: #e2e8f0;
+    border-radius: 10px;
+    padding: 0.8rem;
+    width: 220px;
+    text-align: center;
+    transition: 0.2s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+
+    &:hover {
+      transform: translateY(-6px);
+      background: #f8fafc;
+    }
+
+    .thumb {
+      width: 100%;
+      height: 150px;
       border-radius: 8px;
-      width: 140px;
-      text-align: center;
-      padding: 6px 0;
-      transition: transform 0.3s ease;
+      object-fit: cover;
+      background: #cbd5e1;
+      margin-bottom: 0.6rem;
+    }
 
-      &:hover {
-        transform: translateY(-3px);
+    .info {
+      .price {
+        color: #0ea5e9;
+        font-weight: 600;
       }
 
-      .thumb {
-        background: #cbd5e1;
-        border-radius: 8px;
-        width: 100%;
-        height: 100px;
-        margin-bottom: 8px;
+      .name {
+        color: #0f172a;
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
       }
 
-      .info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-
-        .price {
-          color: #22c55e;
-          font-weight: bold;
-          font-size: 14px;
-        }
-
-        .name {
-          font-size: 13px;
-          color: #475569;
-        }
-
-        .cart {
-          background: none;
-          border: none;
+      .cart {
+        background: transparent;
+        border: none;
+        font-size: 1.2rem;
+        color: #0f172a;
+        cursor: pointer;
+        transition: 0.2s;
+        &:hover {
           color: #0ea5e9;
-          cursor: pointer;
-          font-size: 18px;
-          transition: transform 0.2s;
-
-          &:hover {
-            transform: scale(1.2);
-          }
         }
       }
     }

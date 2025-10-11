@@ -1,41 +1,11 @@
-<!-- ✅ Header -->
 <header class="header">
-  <div class="left">
-    <div class="logo">Logo</div>
-  </div>
-  <!-- ✅ เมนูกลาง -->
+  <div class="left"><div class="logo">Logo</div></div>
+
   <nav class="menu">
-    <a
-      routerLink="/admin/home"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >
-      <i class="fa fa-home"></i> Home
-    </a>
-
-    <a
-      routerLink="/admin/manage-game"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >
-      <i class="fa fa-gamepad"></i> Manage Game
-    </a>
-
-    <a
-      routerLink="/admin/discount"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >
-      <i class="fa fa-tags"></i> Discount
-    </a>
-
-    <a
-      routerLink="/admin/business-history"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >
-      <i class="fa fa-rotate-left"></i> Business history
-    </a>
+    <a routerLink="/admin/home" routerLinkActive="active"><i class="fa fa-home"></i> Home</a>
+    <a routerLink="/admin/manage-game" routerLinkActive="active"><i class="fa fa-gamepad"></i> Manage Game</a>
+    <a routerLink="/admin/discount" routerLinkActive="active"><i class="fa fa-tags"></i> Discount</a>
+    <a routerLink="/admin/business-history" routerLinkActive="active"><i class="fa fa-rotate-left"></i> History</a>
   </nav>
 
   <div class="logout" (click)="onLogout()">
@@ -43,25 +13,29 @@
   </div>
 </header>
 
-<!-- ✅ Container หลักของหน้า -->
 <div class="page-container">
-  <!-- Search bar -->
+  <!-- 🔍 Search bar -->
   <section class="search-section">
     <div class="search-box">
-      <input type="text" placeholder="ค้นหาชื่อเกม" />
-      <select>
+      <input
+        type="text"
+        placeholder="ค้นหาชื่อเกม"
+        [(ngModel)]="searchText"
+        (input)="applyFilter()"
+      />
+      <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
         <option value="">ประเภทของเกม</option>
-        <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+        <option *ngFor="let c of categories" [value]="c.name">
+          {{ c.name }}
+        </option>
       </select>
-      <button><i class="fa fa-search"></i></button>
+      <button (click)="applyFilter()"><i class="fa fa-search"></i></button>
     </div>
   </section>
 
-  <!-- Carousel -->
-  <section class="carousel">
-    <!-- ปุ่มย้อนกลับ -->
+  <!-- 🖼 Carousel -->
+  <section class="carousel" *ngIf="slides.length > 0">
     <button class="nav prev" (click)="prevSlide()">‹</button>
-
     <div class="slides-container">
       <div
         class="slide"
@@ -69,13 +43,14 @@
         [class.active]="i === currentSlide"
       >
         <img [src]="slide.image" alt="slide" />
+        <div class="caption">
+          <h3>{{ slide.name }}</h3>
+          <p>{{ slide.type }} • {{ slide.price }} ฿</p>
+        </div>
       </div>
     </div>
-
-    <!-- ปุ่มต่อไป -->
     <button class="nav next" (click)="nextSlide()">›</button>
 
-    <!-- จุด indicator -->
     <div class="dots">
       <span
         *ngFor="let s of slides; let i = index"
@@ -85,16 +60,15 @@
     </div>
   </section>
 
-  <!-- ✅ Section 5 อันดับเกมขายดี -->
+  <!-- 💎 Top 5 -->
   <section class="top-selling">
-    <h2>$ 5 อันดับเกมขายดี</h2>
-    <div class="card-row top">
-      <div
-        class="card"
-        *ngFor="let item of topGames; let i = index"
-        [class.active]="i === 0"
-      >
-        <div class="thumb"></div>
+    <h2>💎 5 อันดับเกมขายดี</h2>
+    <div class="card-row">
+      <div class="card" *ngFor="let item of topGames">
+        <img
+          [src]="item.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
+          class="thumb"
+        />
         <div class="info">
           <p class="price">{{ item.price }} ฿</p>
           <p class="name">{{ item.name }}</p>
@@ -104,12 +78,15 @@
     </div>
   </section>
 
-  <!-- ✅ Section แยกตามหมวด -->
+  <!-- 🕹 Category -->
   <section class="category" *ngFor="let cat of categories">
     <h3>{{ cat.name }}</h3>
     <div class="card-row">
       <div class="card" *ngFor="let game of cat.games">
-        <div class="thumb"></div>
+        <img
+          [src]="game.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
+          class="thumb"
+        />
         <div class="info">
           <p class="price">{{ game.price }} ฿</p>
           <p class="name">{{ game.name }}</p>
