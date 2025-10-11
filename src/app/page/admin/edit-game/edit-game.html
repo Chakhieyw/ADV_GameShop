@@ -1,0 +1,93 @@
+<div class="admin-page">
+  <header class="navbar">
+    <div class="logo">Logo</div>
+
+    <nav class="menu">
+      <a
+        routerLink="/admin/home"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-home"></i> Home
+      </a>
+      <a
+        routerLink="/admin/manage-game"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-gamepad"></i> Manage Game
+      </a>
+      <a
+        routerLink="/admin/discount"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-tags"></i> Discount
+      </a>
+      <a
+        routerLink="/admin/business-history"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-rotate-left"></i> Business history
+      </a>
+    </nav>
+
+    <div class="logout" (click)="logout()">
+      <i class="fa fa-sign-out"></i> Logout
+    </div>
+  </header>
+  <main class="content">
+    <div class="edit-header">
+      <h3>แก้ไขเกม</h3>
+    </div>
+
+    <form class="form-box" (submit)="saveChanges(); $event.preventDefault()">
+      <div class="form-group">
+        <label>ชื่อเกม</label>
+        <input type="text" [(ngModel)]="name" name="name" />
+      </div>
+
+      <div class="form-group">
+        <label>ราคา</label>
+        <input type="number" [(ngModel)]="price" name="price" />
+      </div>
+
+      <div class="form-group">
+        <label>ประเภท</label>
+        <select [(ngModel)]="type" name="type">
+          <option value="">เลือกประเภท</option>
+          <option value="Action">Action</option>
+          <option value="Racing">Racing</option>
+          <option value="Adventure">Adventure</option>
+          <option value="Sport">Sport</option>
+          <option value="Strategy">Strategy</option>
+          <option value="FPS">FPS</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>วันที่วางขาย</label>
+        <input type="date" [(ngModel)]="releaseDate" name="releaseDate" />
+      </div>
+
+      <div class="form-group">
+        <label>รายละเอียด</label>
+        <textarea [(ngModel)]="detail" name="detail"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>รูปภาพเกม</label>
+        <img [src]="imageUrl" alt="preview" class="preview" />
+        <input type="file" (change)="onFileSelected($event)" />
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="save-btn">บันทึก</button>
+        <button type="button" class="cancel-btn" (click)="cancel()">
+          ยกเลิก
+        </button>
+      </div>
+    </form>
+  </main>
+</div>

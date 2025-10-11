@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/services/auth';
 import { Router } from '@angular/router';
-import { RouterLink } from '@angular/router';
+import { RouterLink , RouterModule} from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin-home',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, RouterModule, CommonModule],
   templateUrl: './admin-home.html',
   styleUrl: './admin-home.scss',
 })

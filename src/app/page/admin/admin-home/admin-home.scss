@@ -59,18 +59,6 @@
         color: #0ea5e9;
       }
 
-      /* เส้นขีดตอน hover */
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0%;
-        height: 3px;
-        background: #0ea5e9;
-        border-radius: 4px;
-        transition: width 0.25s ease-in-out;
-      }
 
       &:hover::after {
         width: 100%;
