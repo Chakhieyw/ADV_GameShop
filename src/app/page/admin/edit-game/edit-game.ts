@@ -102,7 +102,8 @@ export class EditGame implements OnInit {
   cancel() {
     this.router.navigate(['/admin/manage-game']);
   }
-  logout() {
+  async logout() {
+    await this.auth.logout();
     this.router.navigate(['/login']);
   }
 }

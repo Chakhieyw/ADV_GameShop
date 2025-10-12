@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink,RouterModule } from '@angular/router';
 import { Firestore, collection, getDocs, deleteDoc, doc } from '@angular/fire/firestore';
-
+import { AuthService } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-manage-game',
@@ -15,7 +15,7 @@ export class ManageGame {
   games = signal<any[]>([]);
   isLoading = signal(false);
 
-  constructor(private firestore: Firestore, private router: Router) {}
+  constructor(private firestore: Firestore, private router: Router, private auth: AuthService) {}
 
   async ngOnInit() {
     await this.loadGames();
@@ -40,7 +40,8 @@ export class ManageGame {
   goToAdd() {
     this.router.navigate(['/admin/add-game']);
   }
-  logout() {
+  async logout() {
+    await this.auth.logout();
     this.router.navigate(['/login']);
   }
   
