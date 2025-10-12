@@ -1,0 +1,94 @@
+<header class="navbar">
+  <div class="logo">Logo</div>
+
+  <nav class="menu">
+    <a
+      routerLink="/admin/home"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="fa fa-home"></i> Home
+    </a>
+    <a
+      routerLink="/admin/manage-game"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="fa fa-gamepad"></i> Manage Game
+    </a>
+    <a
+      routerLink="/admin/discount"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="fa fa-tags"></i> Discount
+    </a>
+    <a
+      routerLink="/admin/history-admin"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="fa fa-rotate-left"></i> Business history
+    </a>
+  </nav>
+
+  <div class="logout" (click)="logout()">
+    <i class="fa fa-sign-out"></i> Logout
+  </div>
+</header>
+
+<div class="detail-page" *ngIf="game$ | async as game">
+  <h2 class="title">{{ game.name }}</h2>
+
+  <div class="detail-container">
+    <!-- 📸 รูปเกม -->
+    <div class="image-box">
+      <img
+        [src]="game.imageUrl || 'https://via.placeholder.com/600x400?text=No+Image'"
+        alt="game"
+      />
+    </div>
+
+    <!-- 📝 รายละเอียด -->
+    <div class="info-box">
+      <h3>รายละเอียด</h3>
+      <p>{{ game.detail || 'ไม่มีรายละเอียด' }}</p>
+
+      <p><strong>ประเภท:</strong> {{ game.type || '-' }}</p>
+      <p>
+        <strong>วันที่วางขาย:</strong> {{ formatThaiDate(game.releaseDate) ||
+        '-' }}
+      </p>
+
+      <div class="price">
+        <strong>ราคา : {{ game.price }} ฿</strong>
+        <i class="fa fa-shopping-cart cart"></i>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <section class="top-games" *ngIf="topGames$ | async as topGames">
+    <h3>5 อันดับเกมขายดี</h3>
+    <div class="card-row">
+      <div
+        class="card"
+        *ngFor="let item of topGames | slice:0:5"
+        (click)="goToDetail(item.id)"
+        style="cursor: pointer"
+      >
+        <div class="thumb">
+          <img
+            [src]="item.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
+            alt="top game"
+          />
+        </div>
+        <div class="info">
+          <p class="price">{{ item.price }} ฿</p>
+          <p class="name">{{ item.name }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

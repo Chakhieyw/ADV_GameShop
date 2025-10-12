@@ -29,7 +29,7 @@
       </a>
 
       <a
-        routerLink="/admin/business-history"
+        routerLink="/admin/history-admin"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >
@@ -75,7 +75,7 @@
             <td>{{ g.name }}</td>
             <td>{{ g.price }} ฿</td>
             <td>{{ g.type }}</td>
-            <td>{{ g.releaseDate || '-' }}</td>
+            <td>{{ formatThaiDate(g.releaseDate) || '-' }}</td>
             <td class="actions">
               <button
                 class="edit-btn"

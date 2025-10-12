@@ -89,6 +89,9 @@ export class AdminHome implements OnInit, OnDestroy {
       );
     });
   }
+  goDetail(id: string) {
+    this.router.navigate(['/admin/detail-game', id]);
+  }
 
   openModal(game: any) {
     this.selectedGame = game;

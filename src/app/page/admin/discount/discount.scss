@@ -1,0 +1,169 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 0.6rem 1.2rem;
+  font-family: "Prompt", sans-serif;
+
+  .logo {
+    background: #e2e8f0;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  .menu {
+    display: flex;
+    gap: 2rem;
+
+    a {
+      text-decoration: none;
+      color: #0f172a;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      position: relative;
+      padding-bottom: 4px;
+      transition: all 0.2s ease;
+
+      i {
+        font-size: 1rem;
+      }
+
+      /* hover effect */
+      &:hover {
+        color: #0ea5e9;
+      }
+
+      /* ✅ เมื่อ routerLinkActive ทำงาน (หน้าเดียวกัน) */
+      &.active {
+        color: #0ea5e9;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -3px;
+          left: 0;
+          width: 100%;
+          height: 3px;
+          background-color: #0ea5e9;
+          border-radius: 2px;
+        }
+      }
+    }
+  }
+
+  .logout {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #0f172a;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+
+    i {
+      font-size: 0.9rem;
+    }
+
+    &:hover {
+      color: #ef4444;
+    }
+  }
+}
+.content {
+  padding: 1.5rem 2rem;
+
+  .manage-header {
+    background: #f43f5e;
+    color: #fff;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 1rem;
+
+    .add-btn {
+      background: #f43f5e;
+      border: 2px solid white;
+      color: white;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+
+      &:hover {
+        background: white;
+        color: #f43f5e;
+      }
+    }
+  }
+
+  .table-wrapper {
+    background: #e2e8f0;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 10px;
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      text-align: center;
+      background: #94a3b8;
+      color: #fff;
+      border-radius: 10px;
+
+      th {
+        background: #475569;
+        padding: 12px;
+      }
+
+      td {
+        background: #94a3b8;
+        padding: 14px;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+
+        .edit-btn {
+          background: #facc15;
+          color: #000;
+          border: none;
+          border-radius: 6px;
+          padding: 6px 12px;
+          font-weight: 600;
+          cursor: pointer;
+
+          &:hover {
+            background: #fde047;
+          }
+        }
+
+        .delete-btn {
+          background: #ef4444;
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          padding: 6px 12px;
+          font-weight: 600;
+          cursor: pointer;
+
+          &:hover {
+            background: #dc2626;
+          }
+        }
+      }
+    }
+  }
+}
