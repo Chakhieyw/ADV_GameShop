@@ -67,6 +67,33 @@ export class AuthService {
     });
   }
 
+  // ✅ รอให้ Firebase Auth โหลด session เสร็จและคืน user ให้ component
+async waitForSessionUser(): Promise<any | null> {
+  // ถ้ามีใน localStorage อยู่แล้ว คืนเลย
+  const cached = this.getUserFromSession();
+  if (cached) return cached;
+
+  // ถ้า Firebase ยังไม่เช็คสถานะ login เสร็จ ให้รอ
+  if (!this.authChecked()) {
+    await new Promise<void>((resolve) => {
+      const check = setInterval(() => {
+        if (this.authChecked()) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  // ตอนนี้ Firebase เช็คสถานะเสร็จแล้ว — ดู currentUser()
+  const current = this.currentUser();
+  if (current) return current;
+
+  // เผื่อกรณีไม่มี currentUser แต่มีใน localStorage
+  return this.getUserFromSession();
+}
+
+
   // ✅ เปลี่ยนเป็น sessionStorage
   getUserFromSession() {
     const user = localStorage.getItem('user');
@@ -226,6 +253,9 @@ export class AuthService {
     if (!snap.exists()) throw new Error('User not found');
     return snap.data();
   }
+
+  
+
 
   // ✅ อัปเดตข้อมูลผู้ใช้ใน Firestore
 async updateUser(uid: string, data: any, incrementMoney?: number) {

@@ -59,6 +59,7 @@
     font-weight: 500;
 
     i {
+      margin-left: 50px;
       font-size: 20px;
       color: #4caf50;
     }
@@ -109,4 +110,324 @@
     }
   }
 }
+
+.space-start {
+  padding-left: 20px;
+}
+//////////////////////////////////////////////////////
+h2 {
+  color: rgba(220, 38, 38, 0.7);
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.games-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+/* การ์ดเกม */
+.game-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+}
+
+/* รูปเกมเต็มการ์ด */
+.game-image-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.game-image {
+  width: 100%;
+  height: 260px; /* ยาวเต็มการ์ด */
+  object-fit: cover;
+  display: block;
+}
+
+/* overlay game-info */
+.game-info-overlay {
+  position: absolute;
+  bottom: 50px; /* อยู่เหนือ add-cart-btn */
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: rgba(243, 243, 243, 1); /* พื้นสีเทาโปร่ง */
+  text-align: center;
+  padding: 5px 0;
+  font-weight: 500;
+}
+
+.game-info-overlay h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.game-info-overlay p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* ปุ่มตะกร้า */
+.add-cart-btn {
+  margin: 0 auto 10px auto;
+  margin-top: 5px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  font-size: 18px;
+}
+
+.add-cart-btn.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+.add-cart-btn i {
+  pointer-events: none;
+}
+
+
+.cart-icon-wrapper {
+  position: relative;
+  display: inline-block;
+
+  i {
+    font-size: 24px;
+    color: #333;
+  }
+
+  .cart-badge {
+    position: absolute;
+    top: -10px;
+    right: -12px;
+    background-color: red;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50%;
+    line-height: 1;
+    text-align: center;
+    min-width: 5px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-box {
+  position: relative; /* ✅ ให้ลูกสามารถใช้ absolute ได้ */
+  margin-top: 30px;  
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+
+  .cart-icon-wrapper {
+    position: relative;
+    i { font-size: 24px; }
+    .cart-badge {
+      position: absolute;
+      top: -8px; right: -8px;
+      background: red; color: white;
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 0; right: 0;
+    border: none; background: transparent;
+    font-size: 1.5rem; cursor: pointer;
+  }
+
+  h2 { margin: 0; flex: 1; text-align: center; }
+}
+
+.total-price {
+ 
+  display: inline;
+  justify-content: flex-end;
+  align-items: center;
+  right: 20px;           /* ชิดขวา */
+  bottom: 70px;          /* ชิดล่าง */
+  font-weight: bold;
+  color: #b73a3a;
+  font-size: 1.1rem;
+}
+
+.cart-games {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  .game-card {
+    width: 165px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+
+    .game-image-wrapper {
+      position: relative;
+      img { width: 100%; height: 200px; object-fit: cover; }
+      .game-info-overlay {
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        background: rgba(243,243,243,0.9);
+        padding: 5px;
+        text-align: center;
+      }
+    }
+
+    .remove-cart-btn {
+      margin: 5px auto 10px auto;
+      width: 36px; height: 36px;
+      border-radius: 50%; border: none;
+      background-color: #f44336; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  .confirm-btn {
+    background-color: #4caf50; color: #fff;
+    border: none; padding: 8px 16px; border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .cancel-btn {
+    background-color: #ccc; color: #333;
+    border: none; padding: 8px 16px; border-radius: 6px;
+    cursor: pointer;
+  }
+}
+
+.discount-dropdown {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  label {
+    font-weight: 500;
+    color: #fff;
+  }
+
+  select {
+    background-color: #2b2b2b;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 6px 10px;
+    min-width: 180px;
+  }
+}
+
+.price-summary {
+  margin-top: 20px;
+  text-align: right;
+  font-size: 15px;
+  color: #7a7878;
+
+  .discount-line {
+    margin-top: 5px;
+    color: #ccc;
+  }
+
+  .discount-amount {
+    color: #ff4c4c;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-left: 5px;
+  }
+
+  .final-line {
+    margin-top: 8px;
+    font-weight: bold;
+    font-size: 16px;
+
+    .final-price {
+      color: #00e676;
+      margin-left: 5px;
+    }
+  }
+}
+
+.owned-label {
+  display: inline-block;
+  margin-top: 11px;
+  padding: 5px 10px;
+  background-color: #ccc;
+  border-radius: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+
+
+
+
 
