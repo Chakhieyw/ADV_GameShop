@@ -1,7 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink,RouterModule } from '@angular/router';
-import { Firestore, collection, getDocs, deleteDoc, doc } from '@angular/fire/firestore';
+import { Router, RouterLink, RouterModule } from '@angular/router';
+import {
+  Firestore,
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+} from '@angular/fire/firestore';
 import { AuthService } from '../../../core/services/auth';
 
 @Component({
@@ -15,10 +21,26 @@ export class ManageGame {
   games = signal<any[]>([]);
   isLoading = signal(false);
 
-  constructor(private firestore: Firestore, private router: Router, private auth: AuthService) {}
+  constructor(
+    private firestore: Firestore,
+    private router: Router,
+    private auth: AuthService
+  ) {}
 
   async ngOnInit() {
     await this.loadGames();
+  }
+  formatThaiDate(dateInput: any): string {
+    if (!dateInput) return '-';
+    const date = dateInput.seconds
+      ? new Date(dateInput.seconds * 1000) // ถ้าเป็น Timestamp จาก Firestore
+      : new Date(dateInput);
+
+    return date.toLocaleDateString('th-TH', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
   }
 
   async loadGames() {
@@ -44,5 +66,4 @@ export class ManageGame {
     await this.auth.logout();
     this.router.navigate(['/login']);
   }
-  
 }

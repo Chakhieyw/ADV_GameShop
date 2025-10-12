@@ -68,7 +68,6 @@
     </div>
   </section>
 
-  <!-- 💎 Top 5 -->
   <section class="top-selling">
     <h2>💎 5 อันดับเกมขายดี</h2>
     <div class="card-row">
@@ -76,6 +75,7 @@
         <img
           [src]="item.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
           class="thumb"
+          (click)="goDetail(item.id)"
         />
         <div class="info">
           <p class="price">{{ item.price }} ฿</p>
@@ -86,21 +86,21 @@
     </div>
   </section>
 
-  <!-- 🕹 Category -->
-  <section class="category" *ngFor="let cat of categories">
-    <h3>{{ cat.name }}</h3>
-    <div class="card-row">
-      <div class="card" *ngFor="let game of cat.games">
-        <img
-          [src]="game.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
-          class="thumb"
-        />
-        <div class="info">
-          <p class="price">{{ game.price }} ฿</p>
-          <p class="name">{{ game.name }}</p>
-          <button class="cart"><i class="fa fa-shopping-cart"></i></button>
-        </div>
+ <section class="category" *ngFor="let cat of categories">
+  <h3>{{ cat.name }}</h3>
+  <div class="card-row">
+    <div class="card" *ngFor="let game of cat.games">
+      <img
+        [src]="game.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
+        class="thumb"
+        (click)="goDetail(game.id)"
+      />
+      <div class="info">
+        <p class="price">{{ game.price }} ฿</p>
+        <p class="name">{{ game.name }}</p>
+        <button class="cart"><i class="fa fa-shopping-cart"></i></button>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 </div>

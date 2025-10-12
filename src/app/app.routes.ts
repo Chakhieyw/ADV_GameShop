@@ -13,6 +13,7 @@ import { HistoryAdmin } from './page/admin/history-admin/history-admin';
 import { DiscountPage } from './page/admin/discount/discount';
 import { AddDiscount } from './page/admin/add-discount/add-discount';
 import { EditDiscountPage } from './page/admin/edit-discount/edit-discount';
+import { DetailGamePage } from './page/admin/detail-game/detail-game';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -51,6 +52,12 @@ export const routes: Routes = [
     component: EditDiscountPage,
     canActivate: [AdminGuard],
   },
+  {
+    path: 'admin/detail-game/:id',
+    component: DetailGamePage,
+    canActivate: [AdminGuard],
+  },
+  { path: 'admin/detail/:id', component: DetailGamePage, canActivate: [AdminGuard] },
   { path: 'user/profile', component: Profile, canActivate: [UserGuard] },
 
   { path: '**', redirectTo: 'login' },
