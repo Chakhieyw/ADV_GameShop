@@ -75,7 +75,7 @@
                 placeholder="ใส่ชื่อผู้ใช้ใหม่"
               />
               <button class="save-btn" (click)="saveUsername()">💾</button>
-              <button class="cancel-btn" (click)="toggleEditUsername()">❌</button>
+              <button class="cancel-btnss" (click)="toggleEditUsername()">❌</button>
             </ng-container>
 
             <ng-template #showUsername>
@@ -131,7 +131,7 @@
 
 
 <!-- 💬 Dialog เติมเงิน -->
-<div class="dialog-overlay" *ngIf="showDialog">
+<div class="dialog-overlay" *ngIf="showDialog()">
   <div class="dialog-box">
     <h2 class="dialog-title">บริการเติมเงิน</h2>
 
@@ -139,28 +139,28 @@
     <div class="amount-buttons">
       <button
         class="amount-btn"
-        [ngClass]="{ selected: selectedAmount === 100 }"
+        [ngClass]="{ selected: selectedAmount() === 100 }"
         (click)="selectAmount(100)"
       >
         100฿
       </button>
       <button
         class="amount-btn"
-        [ngClass]="{ selected: selectedAmount === 200 }"
+        [ngClass]="{ selected: selectedAmount() === 200 }"
         (click)="selectAmount(200)"
       >
         200฿
       </button>
       <button
         class="amount-btn"
-        [ngClass]="{ selected: selectedAmount === 500 }"
+        [ngClass]="{ selected: selectedAmount() === 500 }"
         (click)="selectAmount(500)"
       >
         500฿
       </button>
       <button
         class="amount-btn"
-        [ngClass]="{ selected: selectedAmount === 1000 }"
+        [ngClass]="{ selected: selectedAmount() === 1000 }"
         (click)="selectAmount(1000)"
       >
         1000฿
@@ -178,7 +178,7 @@
     <div class="amount-input">
       <input
         type="number"
-        [readonly]="!customAmount"
+        [readonly]="!customAmount()"
         placeholder="ระบุจำนวนเงิน"
         [(ngModel)]="inputAmount"
       />
@@ -199,7 +199,7 @@
     </ng-template>
   </button>
 
-  <button class="cancel-btn" (click)="closeDialog()" [disabled]="isProcessing">
+  <button class="cancel-btn-dialog" (click)="closeDialog()" [disabled]="isProcessing">
     ยกเลิก
   </button>
 </div>

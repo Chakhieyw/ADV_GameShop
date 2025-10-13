@@ -1,4 +1,5 @@
-.USER-home-container {
+/* ===== Container หลัก ===== */
+.user-home-containerห {
   background: #f3f3f3;
   min-height: 100vh;
   display: flex;
@@ -6,6 +7,7 @@
   align-items: center;
 }
 
+/* ===== Logo bar ===== */
 .logo-bar {
   width: 100%;
   height: 60px;
@@ -26,532 +28,229 @@
 .barmenu {
   margin-left: 10%;
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
   gap: 50px;
-  flex-wrap: nowrap;
 }
 
 .item-bar {
   font-weight: 500;
   cursor: pointer;
   transition: color 0.3s;
-
-  &:hover {
-    color: #4caf50;
-  }
 }
 
+.item-bar:hover {
+  color: #4caf50;
+}
+
+/* ===== Profile page ===== */
 .profile-page {
   display: flex;
   justify-content: center;
   margin-top: 40px;
-
-  .profile-card {
-    background-color: #ffffff;
-    padding: 30px 40px;
-    border-radius: 16px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    gap: 40px;
-    max-width: 800px;
-    width: 100%;
-    min-height: 400px;
-  }
 }
 
-// ส่วนซ้าย: รูปโปรไฟล์และข้อมูลเงิน
+.profile-card {
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  display: flex;
+  gap: 40px;
+  max-width: 800px;
+  width: 100%;
+  min-height: 400px;
+}
+
+/* ===== ส่วนซ้าย ===== */
 .profile-left {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
   flex: 0 0 200px;
-
-  .profile-upload {
-    .profile-pic-wrapper {
-      position: relative;
-      width: 120px;
-      height: 120px;
-
-      .profile-pic {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        border: 2px solid #ccc;
-        background-color: #cccccc;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-      }
-
-      .camera-btn {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background-color: #4caf50;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        border: 2px solid white;
-
-        input {
-          display: none;
-        }
-
-        .camera-icon {
-          color: white;
-          font-size: 16px;
-          pointer-events: none;
-        }
-      }
-    }
-  }
-
-  .wallet-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    width: 100%;
-
-    .wallet-icon {
-      width: 40px;
-      height: 40px;
-      background: #4caf50;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      
-      i {
-        color: white;
-        font-size: 20px;
-      }
-    }
-
-    .balance {
-      text-align: center;
-      
-      .balance-label {
-        font-size: 12px;
-        color: #666;
-        margin-bottom: 5px;
-      }
-      
-      .balance-amount {
-        font-size: 18px;
-        font-weight: bold;
-        color: #333;
-      }
-    }
-  }
-
-  .topup-btn {
-    background: #4caf50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.3s;
-
-    &:hover {
-      background: #388e3c;
-    }
-
-    i {
-      font-size: 16px;
-    }
-  }
 }
 
-// ส่วนขวา: ข้อมูลผู้ใช้และประวัติ
+/* Profile Pic */
+.profile-upload .profile-pic-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.profile-upload .profile-pic {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  background-color: #ccc;
+  background-size: cover;
+  background-position: center;
+}
+
+.camera-btn {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #4caf50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 2px solid white;
+}
+
+.camera-btn input {
+  display: none;
+}
+
+.camera-icon {
+  color: white;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+/* Wallet */
+.wallet-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  width: 100%;
+}
+
+.wallet-icon {
+  width: 40px;
+  height: 40px;
+  background: #4caf50;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wallet-icon i {
+  color: white;
+  font-size: 20px;
+}
+
+.balance-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.balance-amount {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Topup Button */
+.topup-btn {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.3s;
+}
+
+.topup-btn i {
+  font-size: 16px;
+}
+
+.topup-btn:hover {
+  background: #388e3c;
+}
+
+/* ===== ส่วนขวา ===== */
 .profile-right {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 30px;
-
-  .profile-info {
-    .info-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 15px;
-      gap: 10px;
-
-      .label {
-        font-weight: 500;
-        width: 80px;
-      }
-
-      .value {
-        flex: 1;
-      }
-
-      .edit-icon {
-        cursor: pointer;
-        color: #4caf50;
-        
-        &:hover {
-          color: #388e3c;
-        }
-      }
-
-      input[type="text"] {
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        flex: 1;
-      }
-
-      .save-btn, .cancel-btn {
-        padding: 6px 12px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        margin-left: 5px;
-      }
-
-      .save-btn {
-        background: #4caf50;
-        color: white;
-        
-        &:hover {
-          background: #388e3c;
-        }
-      }
-
-      .cancel-btn {
-        background: #f44336;
-        color: white;
-        
-        &:hover {
-          background: #d32f2f;
-        }
-      }
-    }
-  }
-
-  .transaction-history {
-    .history-title {
-      color: #d32f2f;
-      margin-bottom: 15px;
-      font-size: 18px;
-    }
-
-    .no-history {
-      color: #888;
-      font-style: normal;
-    }
-  }
 }
 
+/* Profile Info */
+.profile-info .info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.profile-info .info-item .label {
+  font-weight: 500;
+  width: 80px;
+}
+
+.profile-info .info-item input[type="text"] {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  flex: 1;
+  margin-right: 10px;
+}
+
+/* Save / Cancel Buttons */
+.save-btn {
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.save-btn:hover {
+  background: #43a047;
+}
+
+.cancel-btnss {
+  background: #f44336;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.cancel-btnss:hover {
+  background: #d32f2f;
+}
+
+/* Email */
 .email-display {
   color: #666;
-  font-style: normal;
 }
 
-/* ===== Dialog Overlay ===== */
-.dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+/* Transaction History */
+.transaction-history .history-title {
+  color: #d32f2f;
+  margin-bottom: 15px;
+  font-size: 18px;
 }
 
-/* ===== Dialog Box ===== */
-.dialog-box {
-  background: white;
-  max-width: 700px;
-    width: 100%;
-    min-height: 300px;
-  border-radius: 16px;
-  padding: 24px;
-  text-align: left;
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s ease;
-}
-
-.dialog-title {
-  font-size: 1.6rem;
-  margin-bottom: 20px;
-  color: #333;
-  font-weight: bold;
-}
-
-/* ===== ปุ่มราคา ===== */
-.amount-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.amount-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: 0.2s;
-}
-
-.amount-btn:hover {
-  transform: scale(1.05);
-}
-
-.amount-btn.selected {
-  background-color: #e74c3c;
-}
-
-/* ===== ช่องกรอก ===== */
-.amount-input input {
-  width: 80%;
-  padding: 10px;
-  font-size: 1.1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.amount-input input:read-only {
-  background-color: #f5f5f5;
-  color: #666;
-}
-
-/* ===== ปุ่มยืนยัน ยกเลิก ===== */
-.dialog-actions {
-  display: flex;
-  justify-content: space-around;
-}
-
-.confirm-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: 0.2s;
-}
-
-.confirm-btn:hover {
-  background-color: #218838;
-}
-
-.cancel-btn {
-  background-color: #ccc;
-  color: #333;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: 0.2s;
-}
-
-.cancel-btn:hover {
-  background-color: #b3b3b3;
-}
-
-/* ===== Animation ===== */
-@keyframes fadeIn {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.confirm-btn[disabled],
-.cancel-btn[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.fa-spinner {
-  margin-right: 5px;
-}
-
-/* ===== Dialog Box ===== */
-.dialog-box {
-  background: #ffffff;
-  max-width: 800px;
-  width: 95%;
-  min-height: 380px;
-  border-radius: 20px;
-  padding: 40px 50px;
-  text-align: left;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
-  animation: fadeIn 0.3s ease;
-  position: relative;
-}
-
-/* ===== Title ===== */
-.dialog-title {
-  font-size: 2rem;
-  margin-bottom: 30px;
-  color: #222;
-  font-weight: 700;
-  border-left: 5px solid #28a745;
-  padding-left: 15px;
-}
-
-/* ===== ปุ่มราคา ===== */
-.amount-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: flex-start; /* ชิดซ้าย */
-  margin-bottom: 25px;
-}
-
-.amount-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 14px 28px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: 500;
-  transition: 0.25s;
-  box-shadow: 0 3px 8px rgba(40, 167, 69, 0.2);
-}
-
-.amount-btn:hover {
-  transform: scale(1.07);
-}
-
-.amount-btn.selected {
-  background-color: #e74c3c;
-  box-shadow: 0 3px 8px rgba(231, 76, 60, 0.3);
-}
-
-/* ===== ช่องกรอก ===== */
-.amount-input {
-  margin-top: 10px;
-  text-align: left;
-}
-
-.amount-input input {
-  width: 70%;
-  padding: 14px;
-  font-size: 1.2rem;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  text-align: center;
-  margin-bottom: 25px;
-  transition: 0.2s;
-}
-
-.amount-input input:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 4px rgba(40, 167, 69, 0.3);
-}
-
-.amount-input input:read-only {
-  background-color: #f9f9f9;
-  color: #777;
-}
-
-/* ===== ปุ่มยืนยัน ยกเลิก ===== */
-.dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 15px;
-}
-
-.confirm-btn,
-.cancel-btn {
-  border: none;
-  padding: 12px 26px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: 500;
-  transition: 0.25s;
-  margin-top: 7%;
-}
-
-.confirm-btn {
-  background-color: rgb(246, 78, 111);
-  color: white;
-  box-shadow: 0 3px 10px rgba(40, 167, 69, 0.25);
-}
-
-.confirm-btn:hover {
-  background-color: rgb(233, 4, 50);
-}
-
-.cancel-btn {
-  background-color: #ddd;
-  color: #333;
-}
-
-.cancel-btn:hover {
-  background-color: #bbb;
-}
-
-/* ===== Animation ===== */
-@keyframes fadeIn {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.confirm-btn[disabled],
-.cancel-btn[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.fa-spinner {
-  margin-right: 8px;
-  animation: spin 1s linear infinite;
-}
-
-/* หมุนไอคอนโหลด */
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.transaction-history .no-history {
+  color: #888;
 }
 
 .history-list {
-  max-height: 200px;       /* กำหนดความสูงให้เลื่อนได้ */
-  overflow-y: auto;        /* scroll แนวตั้ง */
+  max-height: 200px;
+  overflow-y: auto;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -560,7 +259,6 @@
   background-color: #fafafa;
 }
 
-/* เพิ่ม spacing ระหว่าง item */
 .history-item {
   display: flex;
   justify-content: space-between;
@@ -568,22 +266,13 @@
   border-bottom: 1px solid #eee;
 }
 
-/* สไตล์เล็กน้อยสำหรับ type และ amount */
-.history-item .type.topup {
-  color: #28a745;
-  font-weight: bold;
-}
-
-.history-item .type.purchase {
-  color: #e74c3c;
-  font-weight: bold;
-}
-
+.history-item .type.topup,
 .history-item .amount.topup {
   color: #28a745;
   font-weight: bold;
 }
 
+.history-item .type.purchase,
 .history-item .amount.purchase {
   color: #e74c3c;
   font-weight: bold;
@@ -595,5 +284,132 @@
   margin-left: 10px;
 }
 
+/* ===== Dialog Overlay ===== */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
+.dialog-box {
+  background: #fff;
+  max-width: 800px;
+  width: 95%;
+  min-height: 380px;
+  border-radius: 20px;
+  padding: 40px 50px;
+  text-align: left;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+  animation: fadeIn 0.3s ease;
+  position: relative;
+}
 
+.dialog-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #222;
+  font-weight: 700;
+  border-left: 5px solid #28a745;
+  padding-left: 15px;
+}
+
+/* Amount buttons */
+.amount-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.amount-btn {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: 0.25s;
+}
+
+.amount-btn.selected {
+  background-color: #e74c3c;
+}
+
+.amount-btn:hover {
+  transform: scale(1.07);
+}
+
+/* Amount input */
+.amount-input input {
+  width: 70%;
+  padding: 14px;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.amount-input input:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 4px rgba(40,167,69,0.3);
+}
+
+/* Dialog actions */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.confirm-btn {
+  background-color: rgb(246,78,111);
+  color: #fff;
+  border: none;
+  padding: 12px 26px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.confirm-btn:hover {
+  background-color: rgb(233,4,50);
+}
+
+.cancel-btn-dialog {
+  background-color: #ddd;
+  color: #333;
+  border: none;
+  padding: 12px 26px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.cancel-btn-dialog:hover {
+  background-color: #bbb;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.fa-spinner {
+  margin-right: 8px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

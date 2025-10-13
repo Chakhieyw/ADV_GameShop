@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-profile',
   imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './profile.html',
-  styleUrl: './profile.scss'
+  styleUrls: ['./profile.scss']
 })
 export class Profile implements OnInit {
   username = signal('');
@@ -34,48 +34,50 @@ export class Profile implements OnInit {
     private router: Router           // ✅ ใช้ redirect / navigation
   ) {}
 
-    showDialog = false;
-  selectedAmount: number | null = null;
-  customAmount = false;
-  inputAmount: string = '';
+  showDialog = signal(false);
+  selectedAmount = signal<number | null>(null);
+  customAmount = signal(false);
+  inputAmount = signal('');
+
 
   isProcessing = false; // ✅ ตัวแปรสถานะโหลด
 
   // เปิด Dialog
   addMoney() {
-  this.showDialog = true;
-  this.selectedAmount = null;
-  this.customAmount = false;
-  this.inputAmount = '';
+  this.showDialog.set(true);
+  this.selectedAmount.set(null);
+  this.customAmount.set(false);
+  this.inputAmount.set('');
 }
+
 
 
   // ปิด Dialog
   closeDialog() {
-    this.showDialog = false;
+    this.showDialog.set(false);
   }
 
   // เลือกจำนวนเงิน
   selectAmount(amount: number | 'custom') {
     if (amount === 'custom') {
-      this.customAmount = true;
-      this.selectedAmount = null;
-      this.inputAmount = '';
+      this.customAmount.set(true);
+      this.selectedAmount.set(null);
+      this.inputAmount.set('');
     } else {
-      this.customAmount = false;
-      this.selectedAmount = amount;
-      this.inputAmount = amount.toString();
+      this.customAmount.set(false);
+      this.selectedAmount.set(amount);
+      this.inputAmount.set(amount.toString());
     }
   }
 
   // ยืนยันการเติมเงิน (คุณสามารถเชื่อม API ตรงนี้ได้)
   async confirmTopup() {
-    if (this.customAmount && this.inputAmount === '') {
+    if (this.customAmount() && this.inputAmount() === '') {
       alert('กรุณากรอกจำนวนเงิน');
       return;
     }
 
-    const amount = Number(this.customAmount ? this.inputAmount : this.selectedAmount);
+    const amount = Number(this.customAmount() ? this.inputAmount() : this.selectedAmount());
     if (isNaN(amount) || amount <= 0) {
       alert('กรุณากรอกจำนวนเงินที่ถูกต้อง');
       return;
@@ -106,11 +108,15 @@ export class Profile implements OnInit {
       await this.auth.addTopupHistory(user.uid, amount);
 
       // ✅ อัปเดต signal ตาม session ล่าสุด
-      const updatedUser = this.auth.getUserFromSession();
-      this.money.set(updatedUser.money);
+      const updatedUser = await this.auth.fetchUser(user.uid);
+    // อัปเดต signal
+    this.money.set(updatedUser['money'] || 0);
+
+      const items = await this.historyService.getUserHistory(user.uid);
+  this.history.set(items);
 
       alert(`เติมเงินจำนวน ${amount} บาท สำเร็จ!`);
-      this.closeDialog();
+       this.closeDialog();
     } catch (error) {
       console.error(error);
       alert('เกิดข้อผิดพลาดในการเติมเงิน ❌');
@@ -121,8 +127,6 @@ export class Profile implements OnInit {
 }
 
 
-
-
    //ใช้ isLoggedIn()
   async ngOnInit() {
   if (!this.auth.isLoggedIn()) {
@@ -130,7 +134,8 @@ export class Profile implements OnInit {
     this.router.navigate(['/login']);
     return;
   } 
-  const user = this.auth.getUserFromSession();
+  const user = await this.auth.waitForSessionUser(); // ✅
+
     console.log('User from session:', user.username);
     if (!user.username) {
       this.router.navigate(['/login']);

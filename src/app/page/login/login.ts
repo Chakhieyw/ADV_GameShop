@@ -61,10 +61,8 @@ export class Login {
       const role = userData.role;
 
       if (userData.role === 'admin') {
-        alert(`ยินดีต้อนรับผู้ดูแลระบบ ${userData.username} 🧑‍💻`);
         this.router.navigate(['/admin/home']);
       } else if (userData.role === 'user') {
-        alert(`ยินดีต้อนรับ ${userData.username} 🎮`);
         this.router.navigate(['/user/home']);
       } else {
         alert('ไม่พบสิทธิ์ของผู้ใช้ ❌');
