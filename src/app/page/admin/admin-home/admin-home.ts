@@ -2,7 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterModule } from '@angular/router';
-import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+} from '@angular/fire/firestore';
 import { AuthService } from '../../../core/services/auth';
 
 @Component({
@@ -24,16 +30,16 @@ export class AdminHome implements OnInit, OnDestroy {
   allGames: any[] = [];
   categories: { name: string; games: any[] }[] = [];
   topGames: any[] = [];
-  searchText = '';
-  selectedCategory = '';
   slides: any[] = [];
   currentSlide = 0;
   slideInterval: any;
-  showModal = false;
-  selectedGame: any = null;
+  searchText = '';
+  selectedCategory = '';
 
   async ngOnInit() {
-    await this.loadGames();
+    await this.loadAllGames(); // โหลดเกมทั้งหมด
+    await this.loadTopGamesFromMyGames(); // โหลด 5 อันดับยอดขายสูงสุด
+
     if (this.slides.length > 0) {
       this.slideInterval = setInterval(() => this.nextSlide(), 3000);
     }
@@ -43,24 +49,14 @@ export class AdminHome implements OnInit, OnDestroy {
     clearInterval(this.slideInterval);
   }
 
-  async loadGames() {
+  /** ✅ โหลดเกมทั้งหมดจาก games */
+  async loadAllGames() {
     const querySnapshot = await getDocs(collection(this.firestore, 'games'));
     const list: any[] = [];
     querySnapshot.forEach((snap) => list.push({ id: snap.id, ...snap.data() }));
     this.allGames = list;
 
-    // ✅ Top 5 เกมขายดี
-    this.topGames = [...list].sort((a, b) => b.price - a.price).slice(0, 5);
-
-    // ✅ Slides 5 เกมขายดี
-    this.slides = this.topGames.map((g) => ({
-      image: g.imageUrl || 'https://via.placeholder.com/900x250?text=No+Image',
-      name: g.name,
-      price: g.price,
-      type: g.type || 'อื่นๆ',
-    }));
-
-    // ✅ Group ตามประเภทเกม
+    // ✅ Group ตามประเภท
     const grouped: { [key: string]: any[] } = {};
     list.forEach((g) => {
       const type = g.type || 'อื่นๆ';
@@ -73,34 +69,61 @@ export class AdminHome implements OnInit, OnDestroy {
     }));
   }
 
-  async onLogout() {
-    await this.auth.logout();
-    this.router.navigate(['/login']);
+  /** ✅ โหลด 5 อันดับเกมขายดีจาก mygames */
+  async loadTopGamesFromMyGames() {
+    const colRef = collection(this.firestore, 'mygames');
+    const snapshot = await getDocs(colRef);
+
+    // ✅ รวมยอดขายของแต่ละเกม
+    const countMap = new Map<string, number>();
+    snapshot.forEach((docSnap) => {
+      const data: any = docSnap.data();
+      const gameId = data.gameId;
+      countMap.set(gameId, (countMap.get(gameId) || 0) + 1);
+    });
+
+    // ✅ ดึงข้อมูลเกมจริงจาก games
+    const result: any[] = [];
+    for (const [gameId, sales] of countMap.entries()) {
+      const gameRef = doc(this.firestore, 'games', gameId);
+      const gameSnap = await getDoc(gameRef);
+      if (gameSnap.exists()) {
+        result.push({ id: gameId, sales, ...gameSnap.data() });
+      }
+    }
+
+    // ✅ เรียงตามยอดขายมากสุด และเอาแค่ 5 อันดับ
+    this.topGames = result.sort((a, b) => b.sales - a.sales).slice(0, 5);
+
+    // ✅ สร้างสไลด์
+    this.slides = this.topGames.map((g) => ({
+      image: g.imageUrl || 'https://via.placeholder.com/900x250?text=No+Image',
+      name: g.name,
+      price: g.price,
+      type: g.type || 'อื่นๆ',
+    }));
   }
 
+  /** ✅ ฟังก์ชันค้นหา */
   applyFilter() {
     const text = this.searchText.toLowerCase();
     const cat = this.selectedCategory;
     this.categories.forEach((c) => {
-      c.games = c.games.filter(
+      c.games = this.allGames.filter(
         (g) =>
           (!text || g.name.toLowerCase().includes(text)) &&
           (!cat || g.type === cat)
       );
     });
   }
+
   goDetail(id: string) {
     this.router.navigate(['/admin/detail-game', id]);
   }
 
-  openModal(game: any) {
-    this.selectedGame = game;
-    this.showModal = true;
-  }
-
-  closeModal() {
-    this.showModal = false;
-    this.selectedGame = null;
+  async onLogout() {
+    await this.auth.logout();
+    this.router.navigate(['/login']);
   }
 
   nextSlide() {
