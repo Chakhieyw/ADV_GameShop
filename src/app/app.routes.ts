@@ -57,7 +57,11 @@ export const routes: Routes = [
     component: DetailGamePage,
     canActivate: [AdminGuard],
   },
-  { path: 'admin/detail/:id', component: DetailGamePage, canActivate: [AdminGuard] },
+  {
+    path: 'admin/detail/:id',
+    component: DetailGamePage,
+    canActivate: [AdminGuard],
+  },
   { path: 'user/profile', component: Profile, canActivate: [UserGuard] },
 
   { path: '**', redirectTo: 'login' },

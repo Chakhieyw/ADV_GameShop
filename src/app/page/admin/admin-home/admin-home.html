@@ -42,65 +42,48 @@
   </section>
 
   <!-- 🖼 Carousel -->
-  <section class="carousel" *ngIf="slides.length > 0">
-    <button class="nav prev" (click)="prevSlide()">‹</button>
-    <div class="slides-container">
-      <div
-        class="slide"
-        *ngFor="let slide of slides; let i = index"
-        [class.active]="i === currentSlide"
-      >
-        <img [src]="slide.image" alt="slide" />
-        <div class="caption">
-          <h3>{{ slide.name }}</h3>
-          <p>{{ slide.type }} • {{ slide.price }} ฿</p>
-        </div>
-      </div>
-    </div>
-    <button class="nav next" (click)="nextSlide()">›</button>
-
-    <div class="dots">
-      <span
-        *ngFor="let s of slides; let i = index"
-        [class.active]="i === currentSlide"
-        (click)="goToSlide(i)"
-      ></span>
-    </div>
-  </section>
-
+  <!-- 🔝 ส่วน 5 อันดับเกมขายดี -->
   <section class="top-selling">
     <h2>💎 5 อันดับเกมขายดี</h2>
     <div class="card-row">
-      <div class="card" *ngFor="let item of topGames">
+      <div
+        class="card"
+        *ngFor="let item of topGames"
+        (click)="goDetail(item.id)"
+        style="cursor: pointer"
+      >
         <img
           [src]="item.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
           class="thumb"
-          (click)="goDetail(item.id)"
         />
         <div class="info">
           <p class="price">{{ item.price }} ฿</p>
           <p class="name">{{ item.name }}</p>
-          <button class="cart"><i class="fa fa-shopping-cart"></i></button>
+          <p class="sales">ขายแล้ว {{ item.sales }} ครั้ง</p>
         </div>
       </div>
     </div>
   </section>
 
- <section class="category" *ngFor="let cat of categories">
-  <h3>{{ cat.name }}</h3>
-  <div class="card-row">
-    <div class="card" *ngFor="let game of cat.games">
-      <img
-        [src]="game.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
-        class="thumb"
+  <!-- 🎮 ส่วนแสดงเกมตามประเภท -->
+  <section class="category" *ngFor="let cat of categories">
+    <h3>{{ cat.name }}</h3>
+    <div class="card-row">
+      <div
+        class="card"
+        *ngFor="let game of cat.games"
         (click)="goDetail(game.id)"
-      />
-      <div class="info">
-        <p class="price">{{ game.price }} ฿</p>
-        <p class="name">{{ game.name }}</p>
-        <button class="cart"><i class="fa fa-shopping-cart"></i></button>
+        style="cursor: pointer"
+      >
+        <img
+          [src]="game.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
+          class="thumb"
+        />
+        <div class="info">
+          <p class="price">{{ game.price }} ฿</p>
+          <p class="name">{{ game.name }}</p>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 </div>
