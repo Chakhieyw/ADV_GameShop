@@ -108,12 +108,15 @@ export class Profile implements OnInit {
       await this.auth.addTopupHistory(user.uid, amount);
 
       // ✅ อัปเดต signal ตาม session ล่าสุด
-      const updatedUser = this.auth.getUserFromSession();
-      this.money.set(updatedUser.money);
+      const updatedUser = await this.auth.fetchUser(user.uid);
+    // อัปเดต signal
+    this.money.set(updatedUser['money'] || 0);
+
+      const items = await this.historyService.getUserHistory(user.uid);
+  this.history.set(items);
 
       alert(`เติมเงินจำนวน ${amount} บาท สำเร็จ!`);
        this.closeDialog();
-      this.router.navigate(['/user/profile']);
     } catch (error) {
       console.error(error);
       alert('เกิดข้อผิดพลาดในการเติมเงิน ❌');

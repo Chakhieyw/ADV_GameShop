@@ -108,6 +108,26 @@
         background-color: #45a049;
       }
     }
+
+    .clear-btn {
+      padding: 6px 10px;
+      background-color: #e2ca15ee;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      i {
+        font-size: 16px;
+      }
+
+      &:hover {
+        background-color: #ba8f0e;
+      }
+    }
   }
 }
 
@@ -132,20 +152,36 @@ h2 {
 
 /* การ์ดเกม */
 .game-card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  overflow: hidden;
-  width: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 200px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-  position: relative;
   transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
 }
 
-.game-card:hover {
-  transform: translateY(-5px);
+.owned-label {
+  margin: 0 auto 10px auto;
+  margin-top: 8px;
+  width: 65px;
+  height: 30px;
+  border: none;
+  border-radius: 15px;
+  background-color: #eee;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 /* รูปเกมเต็มการ์ด */
@@ -315,7 +351,7 @@ h2 {
   flex-wrap: wrap;
   gap: 20px;
 
-  .game-card {
+  .game-card-bin {
     width: 165px;
     display: flex;
     flex-direction: column;
@@ -416,14 +452,9 @@ h2 {
   }
 }
 
-.owned-label {
-  display: inline-block;
-  margin-top: 11px;
-  padding: 5px 10px;
-  background-color: #ccc;
-  border-radius: 5px;
-  font-weight: bold;
-  color: #555;
+.type-label {
+  font-size: 0.9em;
+  color: #ccc;
 }
 
 

@@ -33,165 +33,176 @@
   <span class="amount">ชำระเงิน : {{ totalCartPrice() }} THB</span>
 </div>
 
-
-  <!-- Right: Search -->
-  <div class="search-area">
-    <input type="text" placeholder="ค้นหาเกม..." />
-    <select>
-      <option value="">ประเภทเกมทั้งหมด</option>
-      <option value="action">FPS</option>
-      <option value="rpg">RPG</option>
-      <option value="strategy">Dungeon</option>
-      <option value="sport">Racing</option>
-      <option value="sport">Moba</option>
-    </select>
-    <button class="search-btn">
-      <i class="fas fa-search"></i>
-    </button>
-  </div>
+<!-- 🔍 Search area -->
+<!-- Search -->
+<div class="search-area">
+  <input type="text" placeholder="ค้นหาเกม..." [(ngModel)]="searchText" />
+  <select [(ngModel)]="selectedType">
+    <option value="">ประเภทเกมทั้งหมด</option>
+    <option value="FPS">FPS</option>
+    <option value="RPG">RPG</option>
+    <option value="Dungeon">Dungeon</option>
+    <option value="Racing">Racing</option>
+    <option value="Moba">Moba</option>
+  </select>
+  <!-- ปุ่มค้นหา -->
+  <button class="search-btn" (click)="performSearch()">
+    <i class="fas fa-magnifying-glass"></i> ค้นหา
+  </button>
+  
+  <!-- ปุ่มล้าง -->
+  <button class="clear-btn" (click)="clearSearch()">
+    <i class="fas fa-eraser"></i> ล้าง
+  </button>
 </div>
 
-<!-- ตัวอย่าง FPS Games -->
+</div>
+</div>
+
 <div class="space-start">
+    <!-- ผลลัพธ์การค้นหา -->
+    <div *ngIf="isSearching">
+      <h2>ผลการค้นหา</h2>
+      <div *ngIf="searchResults.length > 0; else noResults">
+        <div class="games-grid">
+          <div *ngFor="let game of searchResults" class="game-card">
+            <div class="game-image-wrapper">
+            <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
+            <div class="game-info-overlay">
+              <h4>{{ game.name }}</h4>
+              {{ game.type }}
+              <p>฿ {{ game.price }}</p>
+            </div>
+          </div>
+          <button *ngIf="!isGameOwned(game.id)"
+                  class="add-cart-btn"
+                  [class.selected]="isInCart(game)"
+                  (click)="toggleCart(game)">
+            <i class="fas" [ngClass]="{'fa-shopping-cart': !isInCart(game), 'fa-check': isInCart(game)}"></i>
+          </button>
+          <span class="owned-label" *ngIf="isGameOwned(game.id)">มีแล้ว</span>
+          </div>
+        </div>
+      </div>
+      <ng-template #noResults>
+        <p>❌ ไม่พบเกมที่ตรงกับคำค้นหา</p>
+      </ng-template>
+    </div>
+</div>
+
+<!-- 🎮 โหมดปกติ แยกประเภท -->
+<div *ngIf="!isSearching">
+<div class="space-start">
+  <!-- FPS -->
   <h2>FPS First-Person Shooter Games</h2>
   <div class="games-grid" *ngIf="fpsGames().length > 0; else nogames">
     <div class="game-card" *ngFor="let game of fpsGames()">
-      <div class="game-image-wrapper">
+            <div class="game-image-wrapper">
         <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
         <div class="game-info-overlay">
           <h4>{{ game.name }}</h4>
           <p>฿ {{ game.price }}</p>
         </div>
       </div>
-       <!-- ถ้าเกมยังไม่ซื้อ -->
       <button *ngIf="!isGameOwned(game.id)"
               class="add-cart-btn"
               [class.selected]="isInCart(game)"
               (click)="toggleCart(game)">
         <i class="fas" [ngClass]="{'fa-shopping-cart': !isInCart(game), 'fa-check': isInCart(game)}"></i>
-        
       </button>
-
-     <span class="owned-label" *ngIf="isGameOwned(game.id)">
-      มีแล้ว
-    </span>   
+      <span class="owned-label" *ngIf="isGameOwned(game.id)">มีแล้ว</span>
     </div>
-
   </div>
   <ng-template #nogames>ยังไม่มีเกมประเภทนี้วางขาย</ng-template>
 
-  <!-- ตัวอย่าง RPG Games -->
-  <h2>RPG Games</h2>
+    <!-- RPG -->
+    <h2>RPG Games</h2>
     <div class="games-grid" *ngIf="rpgGames().length > 0; else nogames">
-    <div class="game-card" *ngFor="let game of rpgGames()">
-      <div class="game-image-wrapper">
-        <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
-        <div class="game-info-overlay">
-          <h4>{{ game.name }}</h4>
-          <p>฿ {{ game.price }}</p>
-        </div>
-      </div>
-       <!-- ถ้าเกมยังไม่ซื้อ -->
-      <button *ngIf="!isGameOwned(game.id)"
-              class="add-cart-btn"
-              [class.selected]="isInCart(game)"
-              (click)="toggleCart(game)">
-        <i class="fas" [ngClass]="{'fa-shopping-cart': !isInCart(game), 'fa-check': isInCart(game)}"></i>
-        
-      </button>
-
-     <span class="owned-label" *ngIf="isGameOwned(game.id)">
-      มีแล้ว
-    </span>   
-    </div>
-
-  </div>
-  <ng-template #nogames>ยังไม่มีเกมประเภทนี้วางขาย</ng-template>
-
-  <!-- ตัวอย่าง Racing Games -->
-  <h2>Racing Games</h2>
-  <div class="games-grid" *ngIf="racingGames().length > 0; else noGames">
-    <div class="game-card" *ngFor="let game of racingGames()">
-      <div class="game-image-wrapper">
-        <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
-        <div class="game-info-overlay">
-          <h4>{{ game.name }}</h4>
-          <p>฿ {{ game.price }}</p>
-        </div>
-      </div>
-     <button 
-        class="add-cart-btn" 
-        [class.selected]="isInCart(game)" 
-        (click)="toggleCart(game)"
-        *ngIf="!isGameOwned(game.id)">
-        <i class="fas" [ngClass]="{'fa-shopping-cart': !isInCart(game), 'fa-check': isInCart(game)}"></i>
-      </button>
-
-<span class="owned-label" *ngIf="isGameOwned(game.id)">
-  มีแล้ว
-</span>
-
-
-    </div>  
-  </div>
-  <ng-template #noGames>ยังไม่มีเกมประเภทนี้วางขาย</ng-template>
-
-  <!-- ตัวอย่าง moba Games -->
-  <h2>Moba Games</h2>
-  <div class="games-grid" *ngIf="mobaGames().length > 0; else nogames">
-    <div class="game-card" *ngFor="let game of mobaGames()">
-      <div class="game-image-wrapper">
-        <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
-        <div class="game-info-overlay">
-          <h4>{{ game.name }}</h4>
-          <p>฿ {{ game.price }}</p>
-        </div>
-      </div>
-    <button 
-      class="add-cart-btn" 
-      [class.selected]="isInCart(game)" 
-      (click)="toggleCart(game)"
-      *ngIf="!isGameOwned(game.id)">
-      <i class="fas" [ngClass]="{'fa-shopping-cart': !isInCart(game), 'fa-check': isInCart(game)}"></i>
-    </button>
-
-<span class="owned-label" *ngIf="isGameOwned(game.id)">
-  มีแล้ว
-</span>
-
-
+      <div class="game-card" *ngFor="let game of rpgGames()">
+        <div class="game-image-wrapper">
+    <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
+    <div class="game-info-overlay">
+      <h4>{{ game.name }}</h4>
+      <p>฿ {{ game.price }}</p>
     </div>
   </div>
-  <ng-template #nogames>ยังไม่มีเกมประเภทนี้วางขาย</ng-template>
+  <button *ngIf="!isGameOwned(game.id)"
+          class="add-cart-btn"
+          [class.selected]="isInCart(game)"
+          (click)="toggleCart(game)">
+    <i class="fas" [ngClass]="{'fa-shopping-cart': !isInCart(game), 'fa-check': isInCart(game)}"></i>
+  </button>
+  <span class="owned-label" *ngIf="isGameOwned(game.id)">มีแล้ว</span>
 
-  <!-- ตัวอย่าง RPG Games -->
-  <h2>Dungeon Games</h2>
-  <div class="games-grid" *ngIf="dungeonGames().length > 0; else nogames">
-    <div class="game-card" *ngFor="let game of dungeonGames()">
-      <div class="game-image-wrapper">
-        <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
-        <div class="game-info-overlay">
-          <h4>{{ game.name }}</h4>
-          <p>฿ {{ game.price }}</p>
-        </div>
       </div>
-      <button 
-        class="add-cart-btn" 
-        [class.selected]="isInCart(game)" 
-        (click)="toggleCart(game)"
-        *ngIf="!isGameOwned(game.id)">
-        <i class="fas" [ngClass]="{'fa-shopping-cart': !isInCart(game), 'fa-check': isInCart(game)}"></i>
-      </button>
+    </div>
 
-    <span class="owned-label" *ngIf="isGameOwned(game.id)">
-      มีแล้ว
-    </span>   
-
-
+    <!-- Racing -->
+    <h2>Racing Games</h2>
+    <div class="games-grid" *ngIf="racingGames().length > 0; else nogames">
+      <div class="game-card" *ngFor="let game of racingGames()">
+        <div class="game-image-wrapper">
+    <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
+    <div class="game-info-overlay">
+      <h4>{{ game.name }}</h4>
+      <p>฿ {{ game.price }}</p>
     </div>
   </div>
-  <ng-template #nogames>ยังไม่มีเกมประเภทนี้วางขาย</ng-template>
+  <button *ngIf="!isGameOwned(game.id)"
+          class="add-cart-btn"
+          [class.selected]="isInCart(game)"
+          (click)="toggleCart(game)">
+    <i class="fas" [ngClass]="{'fa-shopping-cart': !isInCart(game), 'fa-check': isInCart(game)}"></i>
+  </button>
+  <span class="owned-label" *ngIf="isGameOwned(game.id)">มีแล้ว</span>
 
+      </div>
+    </div>
+
+    <!-- Moba -->
+    <h2>Moba Games</h2>
+    <div class="games-grid" *ngIf="mobaGames().length > 0; else nogames">
+      <div class="game-card" *ngFor="let game of mobaGames()">
+        <div class="game-image-wrapper">
+    <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
+    <div class="game-info-overlay">
+      <h4>{{ game.name }}</h4>
+      <p>฿ {{ game.price }}</p>
+    </div>
+  </div>
+  <button *ngIf="!isGameOwned(game.id)"
+          class="add-cart-btn"
+          [class.selected]="isInCart(game)"
+          (click)="toggleCart(game)">
+    <i class="fas" [ngClass]="{'fa-shopping-cart': !isInCart(game), 'fa-check': isInCart(game)}"></i>
+  </button>
+  <span class="owned-label" *ngIf="isGameOwned(game.id)">มีแล้ว</span>
+
+      </div>
+    </div>
+
+    <!-- Dungeon -->
+    <h2>Dungeon Games</h2>
+    <div class="games-grid" *ngIf="dungeonGames().length > 0; else nogames">
+      <div class="game-card" *ngFor="let game of dungeonGames()">
+        <div class="game-image-wrapper">
+    <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
+    <div class="game-info-overlay">
+      <h4>{{ game.name }}</h4>
+      <p>฿ {{ game.price }}</p>
+    </div>
+  </div>
+  <button *ngIf="!isGameOwned(game.id)"
+          class="add-cart-btn"
+          [class.selected]="isInCart(game)"
+          (click)="toggleCart(game)">
+    <i class="fas" [ngClass]="{'fa-shopping-cart': !isInCart(game), 'fa-check': isInCart(game)}"></i>
+  </button>
+  <span class="owned-label" *ngIf="isGameOwned(game.id)">มีแล้ว</span>
+
+      </div>
+    </div>
+  </div>
 </div>
 
 
@@ -211,7 +222,7 @@
     <!-- รายการเกม -->
     <div class="cart-games">
       <div *ngIf="cartItems().length > 0; else noItem"></div>
-      <div class="game-card" *ngFor="let game of cartItems()">
+      <div class="game-card-bin" *ngFor="let game of cartItems()">
         <div class="game-image-wrapper">
           <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
           <div class="game-info-overlay">
@@ -258,6 +269,8 @@
 
   </div>
 </div>
+
+
 
 
 

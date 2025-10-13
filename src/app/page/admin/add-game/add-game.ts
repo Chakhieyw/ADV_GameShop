@@ -47,6 +47,8 @@ export class AddGame {
 
     try {
       let imageUrl = '';
+      
+
       if (this.file) {
         imageUrl = await this.auth.uploadToCloudinary(this.file);
       }
@@ -59,6 +61,7 @@ export class AddGame {
         // ✅ ใช้วันที่ที่ตั้งค่าไว้ (อัตโนมัติ)
         releaseDate: this.releaseDate,
         imageUrl,
+        sold: 0,
         createdAt: new Date(),
       });
 

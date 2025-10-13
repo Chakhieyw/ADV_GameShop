@@ -20,26 +20,23 @@ export class UserHome implements OnInit {
   user = signal<any>(null); // ข้อมูล user ล่าสุด
   allGames = signal<any[]>([]); // เกมทั้งหมด
   totalGames = signal<string>('0.00'); // จำนวนเกมทั้งหมด
-
   fpsGames = signal<any[]>([]); // เกมแนว FPS
   rpgGames = signal<any[]>([]); // เกมแนว RPG
   mobaGames = signal<any[]>([]); // เกมแนว MOBA
   racingGames = signal<any[]>([]); // เกมแนว Racing
   dungeonGames = signal<any[]>([]); // เกมแนว Dungeon
-
   cartItems = signal<any[]>([]); // รายการสินค้าในตะกร้า
-
   showCart = signal(false);
-
   discounts = signal<any[]>([]); // รายการคูปองจาก Firestore
   ownedGames = signal<any[]>([]); // เกมที่ผู้ใช้ซื้อแล้ว
-
-selectedDiscount = signal<any | null>(null); // คูปองที่เลือกไว้
-
-
-cartItemsList: any[] = [];
-
+  selectedDiscount = signal<any | null>(null); // คูปองที่เลือกไว้
+  cartItemsList: any[] = [];
   categories = ['Moba','Racing','RPG','FPS','Dungeon']; // ประเภทเกม
+  searchResults: any[] = [];   // ผลลัพธ์การค้นหา
+  searchText: string = '';      // ชื่อเกม
+  selectedType: string = '';    // ประเภทเกม
+  isSearching: boolean = false; // อยู่ในโหมดค้นหา
+  
 
   constructor(
     private auth: AuthService,
@@ -47,13 +44,13 @@ cartItemsList: any[] = [];
     private firestore: Firestore,
     private gameService: GameService,
     private historyService: HistoryService,
-
-
   ) {
     if (!this.auth.isLoggedIn()) {
       this.router.navigate(['/login']);
     }
   }
+
+
   
   // Getter อ่านอย่างเดียว
   showCartDialog() {
@@ -80,6 +77,42 @@ async init() {
   await this.loadGames();
   await this.loadDiscounts();
 }
+
+
+
+// เรียกเมื่อกดปุ่ม Search
+performSearch() {
+  console.log(this.searchText);
+  console.log(this.selectedType);
+  
+  if (this.searchText == '' && this.selectedType == '') {
+    this.clearSearch();
+    return;
+  }
+  let results = this.allGames();
+
+  if (this.searchText.trim()) {
+    const text = this.searchText.toLowerCase();
+    results = results.filter(g => g.name && g.name.toLowerCase().includes(text));
+  }
+
+  if (this.selectedType) {
+    results = results.filter(g => g.type && g.type === this.selectedType);
+  }
+
+  this.searchResults = results;
+  this.isSearching = true;
+}
+
+
+// ล้างผลการค้นหา
+clearSearch() {
+  this.searchText = '';
+  this.selectedType = '';
+  this.searchResults = [];
+  this.isSearching = false;
+}
+
 
 
 // โหลด discounts
@@ -170,25 +203,18 @@ toggleCart(game: any) {
     this.cartItems.set([...current, game]);
   }
 }
-
-
-
 // ตรวจสอบว่าเกมอยู่ในตะกร้า
 isInCart(game: any) {
   return this.cartItems().some(g => g.id === game.id);
 }
-
 // ลบเกมจาก cart (dialog ใช้ trash)
 removeFromCart(game: any) {
   this.cartItems.set(this.cartItems().filter(g => g.id !== game.id));
 }
-
 // คำนวณราคาทั้งหมด
 totalCartPrice = computed(() => 
   this.cartItems().reduce((sum, g) => sum + g.price, 0)
 );
-
-
 // จำนวนรายการ
 cartCount() {
   return this.cartItems().length;
@@ -205,9 +231,6 @@ async checkout() {
     alert('กรุณาเลือกซื้อเกมก่อน');
     return;
   }
-
-  
-
   // เช็กเงินเพียงพอไหม
   if (userData.money < total) {
     alert('ยอดเงินในบัญชีไม่พอ กรุณาเติมเงิน');
@@ -240,16 +263,16 @@ async checkout() {
     console.log('User money updated successfully');
 
     for (let game of this.cartItems()) {
-  // เพิ่มลง ownedGames ทันที
-  this.ownedGames.set([...this.ownedGames(), {
-    userId: userData.uid,
-    gameId: game.id,
-    name: game.name,
-    imageUrl: game.imageUrl,
-    price: game.price,
-    purchasedAt: new Date()
-  }]);
-}
+      // เพิ่มลง ownedGames ทันที
+      this.ownedGames.set([...this.ownedGames(), {
+        userId: userData.uid,
+        gameId: game.id,  
+        name: game.name,
+        imageUrl: game.imageUrl,
+        price: game.price,
+        purchasedAt: new Date()
+      }]);
+    }
 
 
     // 2️⃣ บันทึกประวัติ + เพิ่มเกม
@@ -267,8 +290,11 @@ async checkout() {
       console.log('Adding game to mygames:', game);
       await this.gameService.addMyGame(userData.uid, game);
       console.log('Game added to mygames:', game.id);
-    }
 
+      await this.gameService.increaseSoldCount(game.id);
+      console.log('update game sold success');
+    }
+    
     // 3️⃣ ลดคูปอง
     if (this.selectedDiscount()) {
       console.log('Decreasing coupon count:', this.selectedDiscount().id);
@@ -294,15 +320,11 @@ async checkout() {
   }
 }
 
-
-
-
 // ฟังก์ชันเลือกส่วนลด
 onDiscountChange(selectedId: string) {
   const discount = this.discounts().find(d => d.id === selectedId);
   this.selectedDiscount.set(discount || null);
 }
-
 
 // คำนวณส่วนลดอัตโนมัติ
 discountAmount = computed(() => {
@@ -310,7 +332,6 @@ discountAmount = computed(() => {
   const total = this.cartItems().reduce((sum, g) => sum + g.price, 0);
   return discount ? (discount.percent / 100) * total : 0;
 });
-
 
 // ราคาสุทธิอัตโนมัติ
 finalPrice = computed(() => this.cartItems().reduce((sum, g) => sum + g.price, 0) - this.discountAmount());
