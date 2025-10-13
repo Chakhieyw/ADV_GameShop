@@ -68,39 +68,51 @@
     </div>
   </section>
 
-  <section class="top-selling">
+  <!-- 💎 Top 5 Best Sellers -->
+  <section class="top-selling" *ngIf="topGames.length > 0; else noTopGames">
     <h2>💎 5 อันดับเกมขายดี</h2>
     <div class="card-row">
-      <div class="card" *ngFor="let item of topGames">
+      <div
+        class="card"
+        *ngFor="let item of topGames"
+        (click)="goDetail(item.id)"
+      >
         <img
-          [src]="item.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
+          [src]="item.imageUrl || 'https://placehold.co/200x150/94a3b8/ffffff?text=No+Image'"
           class="thumb"
-          (click)="goDetail(item.id)"
         />
         <div class="info">
           <p class="price">{{ item.price }} ฿</p>
           <p class="name">{{ item.name }}</p>
-          <button class="cart"><i class="fa fa-shopping-cart"></i></button>
+          <p class="sold">ขายแล้ว {{ item.sales }} ครั้ง</p>
         </div>
       </div>
     </div>
   </section>
 
- <section class="category" *ngFor="let cat of categories">
-  <h3>{{ cat.name }}</h3>
-  <div class="card-row">
-    <div class="card" *ngFor="let game of cat.games">
-      <img
-        [src]="game.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
-        class="thumb"
+  <ng-template #noTopGames>
+    <div class="no-data"><p>😅 ยังไม่มีการซื้อเกมในระบบ</p></div>
+  </ng-template>
+
+  <!-- 🎮 ส่วนแสดงเกมตามประเภท -->
+  <section class="category" *ngFor="let cat of categories">
+    <h3>{{ cat.name }}</h3>
+    <div class="card-row">
+      <div
+        class="card"
+        *ngFor="let game of cat.games"
         (click)="goDetail(game.id)"
-      />
-      <div class="info">
-        <p class="price">{{ game.price }} ฿</p>
-        <p class="name">{{ game.name }}</p>
-        <button class="cart"><i class="fa fa-shopping-cart"></i></button>
+        style="cursor: pointer"
+      >
+        <img
+          [src]="game.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
+          class="thumb"
+        />
+        <div class="info">
+          <p class="price">{{ game.price }} ฿</p>
+          <p class="name">{{ game.name }}</p>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 </div>
