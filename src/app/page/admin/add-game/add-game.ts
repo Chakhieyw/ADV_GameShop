@@ -77,9 +77,8 @@ export class AddGame {
     this.router.navigate(['/admin/manage-game']);
   }
 
-  logout() {
-    sessionStorage.removeItem('user');
-    localStorage.removeItem('user');
+  async logout() {
+    await this.auth.logout();
     this.router.navigate(['/login']);
   }
 }

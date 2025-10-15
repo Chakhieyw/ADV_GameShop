@@ -20,7 +20,6 @@
   <!-- 🧾 แผ่นโปรไฟล์ -->
   <div class="profile-page">
     <div class="profile-card">
-
       <!-- 📸 ส่วนซ้าย: รูปโปรไฟล์และข้อมูลเงิน -->
       <div class="profile-left">
         <!-- รูปโปรไฟล์ -->
@@ -37,7 +36,11 @@
 
             <!-- ปุ่มกล้อง overlay -->
             <label class="camera-btn">
-              <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+              <input
+                type="file"
+                (change)="onFileSelected($event)"
+                accept="image/*"
+              />
               <span class="camera-icon">📷</span>
             </label>
           </div>
@@ -75,12 +78,17 @@
                 placeholder="ใส่ชื่อผู้ใช้ใหม่"
               />
               <button class="save-btn" (click)="saveUsername()">💾</button>
-              <button class="cancel-btnss" (click)="toggleEditUsername()">❌</button>
+              <button class="cancel-btnss" (click)="toggleEditUsername()">
+                ❌
+              </button>
             </ng-container>
 
             <ng-template #showUsername>
               <span class="value">{{ username() }}</span>
-              <i class="fas fa-pencil-alt edit-icon" (click)="toggleEditUsername()"></i>
+              <i
+                class="fas fa-pencil-alt edit-icon"
+                (click)="toggleEditUsername()"
+              ></i>
             </ng-template>
           </div>
 
@@ -90,45 +98,49 @@
           </div>
         </div>
 
-      <!-- ประวัติการทำรายการ -->
-<div class="transaction-history">
-  <h3 class="history-title">ประวัติการทำรายการ</h3>
+        <!-- ประวัติการทำรายการ -->
+        <div class="transaction-history">
+          <h3 class="history-title">ประวัติการทำรายการ</h3>
 
-  <!-- กำลังโหลด -->
-  <p *ngIf="loading()">กำลังโหลด...</p>
+          <!-- กำลังโหลด -->
+          <p *ngIf="loading()">กำลังโหลด...</p>
 
-  <!-- ไม่มีประวัติ -->
-  <p *ngIf="!loading() && history().length === 0" class="no-history">
-    ยังไม่มีประวัติการทำรายการ
-  </p>
+          <!-- ไม่มีประวัติ -->
+          <p *ngIf="!loading() && history().length === 0" class="no-history">
+            ยังไม่มีประวัติการทำรายการ
+          </p>
 
-  <!-- รายการ history -->
-  <ul *ngIf="!loading() && history().length > 0" class="history-list">
-    <li *ngFor="let item of history()" class="history-item">
-      <div class="item-left">
-        <span class="type" [ngClass]="{'topup': item.type==='topup', 'purchase': item.type==='purchase'}">
-          {{ item.type === 'topup' ? 'เติมเงิน' : 'ซื้อเกม' }}
-        </span>
-        <span class="note" *ngIf="item.note">({{ item.note }})</span>
-      </div>
-      <div class="item-right">
-        <span class="amount" [ngClass]="{'topup': item.type==='topup', 'purchase': item.type==='purchase'}">
-          {{ item.amount | currency:'THB':'symbol':'1.0-0' }}
-        </span>
-        <span class="time">{{ item.timestamp?.toDate() | date:'dd/MM/yyyy HH:mm' }}</span>
-      </div>
-    </li>
-  </ul>
-</div>
-
+          <!-- รายการ history -->
+          <ul *ngIf="!loading() && history().length > 0" class="history-list">
+            <li *ngFor="let item of history()" class="history-item">
+              <div class="item-left">
+                <span
+                  class="type"
+                  [ngClass]="{'topup': item.type==='topup', 'purchase': item.type==='purchase'}"
+                >
+                  {{ item.type === 'topup' ? 'เติมเงิน' : 'ซื้อเกม' }}
+                </span>
+                <span class="note" *ngIf="item.note">({{ item.note }})</span>
+              </div>
+              <div class="item-right">
+                <span
+                  class="amount"
+                  [ngClass]="{'topup': item.type==='topup', 'purchase': item.type==='purchase'}"
+                >
+                  {{ item.amount | currency:'THB':'symbol':'1.0-0' }}
+                </span>
+                <span class="time"
+                  >{{ item.timestamp?.toDate() | date:'dd/MM/yyyy HH:mm'
+                  }}</span
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
-
-
-
 
 <!-- 💬 Dialog เติมเงิน -->
 <div class="dialog-overlay" *ngIf="showDialog()">
@@ -186,22 +198,26 @@
 
     <!-- ปุ่มยืนยันและยกเลิก -->
     <div class="dialog-actions">
-  <button
-    class="confirm-btn"
-    (click)="confirmTopup()"
-    [disabled]="isProcessing"
-  >
-    <ng-container *ngIf="!isProcessing; else loading">
-      ยืนยัน
-    </ng-container>
-    <ng-template #loading>
-      <i class="fas fa-spinner fa-spin"></i> กำลังดำเนินการ...
-    </ng-template>
-  </button>
+      <button
+        class="confirm-btn"
+        (click)="confirmTopup()"
+        [disabled]="isProcessing"
+      >
+        <ng-container *ngIf="!isProcessing; else loading">
+          ยืนยัน
+        </ng-container>
+        <ng-template #loading>
+          <i class="fas fa-spinner fa-spin"></i> กำลังดำเนินการ...
+        </ng-template>
+      </button>
 
-  <button class="cancel-btn-dialog" (click)="closeDialog()" [disabled]="isProcessing">
-    ยกเลิก
-  </button>
-</div>
-
+      <button
+        class="cancel-btn-dialog"
+        (click)="closeDialog()"
+        [disabled]="isProcessing"
+      >
+        ยกเลิก
+      </button>
+    </div>
+  </div>
 </div>

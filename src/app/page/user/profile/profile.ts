@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-profile',
   imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './profile.html',
-  styleUrls: ['./profile.scss']
+  styleUrls: ['./profile.scss'],
 })
 export class Profile implements OnInit {
   username = signal('');
@@ -29,9 +29,9 @@ export class Profile implements OnInit {
   loading = signal(true);
 
   constructor(
-    private auth: AuthService,       // ✅ ใช้ดึงข้อมูลผู้ใช้ session
+    private auth: AuthService, // ✅ ใช้ดึงข้อมูลผู้ใช้ session
     private historyService: HistoryService, // ✅ ใช้ดึงประวัติ
-    private router: Router           // ✅ ใช้ redirect / navigation
+    private router: Router // ✅ ใช้ redirect / navigation
   ) {}
 
   showDialog = signal(false);
@@ -39,18 +39,15 @@ export class Profile implements OnInit {
   customAmount = signal(false);
   inputAmount = signal('');
 
-
   isProcessing = false; // ✅ ตัวแปรสถานะโหลด
 
   // เปิด Dialog
   addMoney() {
-  this.showDialog.set(true);
-  this.selectedAmount.set(null);
-  this.customAmount.set(false);
-  this.inputAmount.set('');
-}
-
-
+    this.showDialog.set(true);
+    this.selectedAmount.set(null);
+    this.customAmount.set(false);
+    this.inputAmount.set('');
+  }
 
   // ปิด Dialog
   closeDialog() {
@@ -77,7 +74,9 @@ export class Profile implements OnInit {
       return;
     }
 
-    const amount = Number(this.customAmount() ? this.inputAmount() : this.selectedAmount());
+    const amount = Number(
+      this.customAmount() ? this.inputAmount() : this.selectedAmount()
+    );
     if (isNaN(amount) || amount <= 0) {
       alert('กรุณากรอกจำนวนเงินที่ถูกต้อง');
       return;
@@ -90,7 +89,6 @@ export class Profile implements OnInit {
 
     if (this.isProcessing) return;
     this.isProcessing = true;
-  
 
     const user = this.auth.getUserFromSession();
     if (!user) {
@@ -109,14 +107,14 @@ export class Profile implements OnInit {
 
       // ✅ อัปเดต signal ตาม session ล่าสุด
       const updatedUser = await this.auth.fetchUser(user.uid);
-    // อัปเดต signal
-    this.money.set(updatedUser['money'] || 0);
+      // อัปเดต signal
+      this.money.set(updatedUser['money'] || 0);
 
       const items = await this.historyService.getUserHistory(user.uid);
-  this.history.set(items);
+      this.history.set(items);
 
       alert(`เติมเงินจำนวน ${amount} บาท สำเร็จ!`);
-       this.closeDialog();
+      this.closeDialog();
     } catch (error) {
       console.error(error);
       alert('เกิดข้อผิดพลาดในการเติมเงิน ❌');
@@ -124,17 +122,16 @@ export class Profile implements OnInit {
       this.isProcessing = false;
       this.loading.set(false);
     }
-}
+  }
 
-
-   //ใช้ isLoggedIn()
+  //ใช้ isLoggedIn()
   async ngOnInit() {
-  if (!this.auth.isLoggedIn()) {
-    console.log('Not logged in, redirecting to login');
-    this.router.navigate(['/login']);
-    return;
-  } 
-  const user = await this.auth.waitForSessionUser(); // ✅
+    if (!this.auth.isLoggedIn()) {
+      console.log('Not logged in, redirecting to login');
+      this.router.navigate(['/login']);
+      return;
+    }
+    const user = await this.auth.waitForSessionUser(); // ✅
 
     console.log('User from session:', user.username);
     if (!user.username) {
@@ -163,7 +160,7 @@ export class Profile implements OnInit {
       // ถ้า fetch ไม่ได้ ให้ logout ออกไปหน้า login
       this.auth.logout();
       this.router.navigate(['/login']);
-    }finally {
+    } finally {
       this.loading.set(false);
     }
   }
@@ -202,7 +199,7 @@ export class Profile implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       this.file = input.files[0];
-      
+
       if (!file) return;
     }
     try {

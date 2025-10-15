@@ -1,0 +1,78 @@
+<div class="admin-page">
+  <!-- 🔹 Header -->
+  <header class="navbar">
+    <div class="logo">Logo</div>
+
+    <nav class="menu">
+      <a
+        routerLink="/admin/home"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-home"></i> Home
+      </a>
+      <a
+        routerLink="/admin/manage-game"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-gamepad"></i> Manage Game
+      </a>
+      <a
+        routerLink="/admin/discount"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-tags"></i> Discount
+      </a>
+      <a
+        routerLink="/admin/history-admin"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-rotate-left"></i> Business history
+      </a>
+    </nav>
+
+    <div class="logout" (click)="logout()">
+      <i class="fa fa-sign-out"></i> Logout
+    </div>
+  </header>
+  <div class="admin-page">
+    <div class="manage-header">
+      <h3>ประวัติการทำธุรกรรม</h3>
+    </div>
+
+    <div
+      class="table-wrapper"
+      *ngIf="histories$ | async as histories; else loading"
+    >
+      <table class="game-table" *ngIf="histories.length > 0; else empty">
+        <thead>
+          <tr>
+            <th>ชื่อผู้ใช้</th>
+            <th>รายการธุรกรรม</th>
+            <th>ราคา</th>
+            <th>วันที่-เวลา</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let h of histories">
+            <td>{{ h.username }}</td>
+            <td>{{ h.note }}</td>
+            <td>{{ h.amount }} ฿</td>
+            <td>{{ formatDate(h.timestamp) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading">กำลังโหลดข้อมูล...</div>
+    </ng-template>
+
+    <ng-template #empty>
+      <div class="empty">❗ ยังไม่มีข้อมูลธุรกรรม</div>
+    </ng-template>
+  </div>
+</div>

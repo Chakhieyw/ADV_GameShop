@@ -2,10 +2,18 @@
   <div class="left"><div class="logo">Logo</div></div>
 
   <nav class="menu">
-    <a routerLink="/admin/home" routerLinkActive="active"><i class="fa fa-home"></i> Home</a>
-    <a routerLink="/admin/manage-game" routerLinkActive="active"><i class="fa fa-gamepad"></i> Manage Game</a>
-    <a routerLink="/admin/discount" routerLinkActive="active"><i class="fa fa-tags"></i> Discount</a>
-    <a routerLink="/admin/business-history" routerLinkActive="active"><i class="fa fa-rotate-left"></i> History</a>
+    <a routerLink="/admin/home" routerLinkActive="active"
+      ><i class="fa fa-home"></i> Home</a
+    >
+    <a routerLink="/admin/manage-game" routerLinkActive="active"
+      ><i class="fa fa-gamepad"></i> Manage Game</a
+    >
+    <a routerLink="/admin/discount" routerLinkActive="active"
+      ><i class="fa fa-tags"></i> Discount</a
+    >
+    <a routerLink="/admin/history-admin" routerLinkActive="active"
+      ><i class="fa fa-rotate-left"></i> History</a
+    >
   </nav>
 
   <div class="logout" (click)="onLogout()">
@@ -14,25 +22,6 @@
 </header>
 
 <div class="page-container">
-  <!-- 🔍 Search bar -->
-  <section class="search-section">
-    <div class="search-box">
-      <input
-        type="text"
-        placeholder="ค้นหาชื่อเกม"
-        [(ngModel)]="searchText"
-        (input)="applyFilter()"
-      />
-      <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
-        <option value="">ประเภทของเกม</option>
-        <option *ngFor="let c of categories" [value]="c.name">
-          {{ c.name }}
-        </option>
-      </select>
-      <button (click)="applyFilter()"><i class="fa fa-search"></i></button>
-    </div>
-  </section>
-
   <!-- 🖼 Carousel -->
   <section class="carousel" *ngIf="slides.length > 0">
     <button class="nav prev" (click)="prevSlide()">‹</button>
@@ -60,29 +49,42 @@
     </div>
   </section>
 
-  <!-- 💎 Top 5 -->
-  <section class="top-selling">
+  <!-- 💎 Top 5 Best Sellers -->
+  <section class="top-selling" *ngIf="topGames.length > 0; else noTopGames">
     <h2>💎 5 อันดับเกมขายดี</h2>
     <div class="card-row">
-      <div class="card" *ngFor="let item of topGames">
+      <div
+        class="card"
+        *ngFor="let item of topGames"
+        (click)="goDetail(item.id)"
+      >
         <img
-          [src]="item.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
+          [src]="item.imageUrl || 'https://placehold.co/200x150/94a3b8/ffffff?text=No+Image'"
           class="thumb"
         />
         <div class="info">
           <p class="price">{{ item.price }} ฿</p>
           <p class="name">{{ item.name }}</p>
-          <button class="cart"><i class="fa fa-shopping-cart"></i></button>
+          <p class="sold">ขายแล้ว {{ item.sales }} ครั้ง</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 🕹 Category -->
+  <ng-template #noTopGames>
+    <div class="no-data"><p>😅 ยังไม่มีการซื้อเกมในระบบ</p></div>
+  </ng-template>
+
+  <!-- 🎮 ส่วนแสดงเกมตามประเภท -->
   <section class="category" *ngFor="let cat of categories">
     <h3>{{ cat.name }}</h3>
     <div class="card-row">
-      <div class="card" *ngFor="let game of cat.games">
+      <div
+        class="card"
+        *ngFor="let game of cat.games"
+        (click)="goDetail(game.id)"
+        style="cursor: pointer"
+      >
         <img
           [src]="game.imageUrl || 'https://via.placeholder.com/200x150?text=No+Image'"
           class="thumb"
@@ -90,7 +92,6 @@
         <div class="info">
           <p class="price">{{ game.price }} ฿</p>
           <p class="name">{{ game.name }}</p>
-          <button class="cart"><i class="fa fa-shopping-cart"></i></button>
         </div>
       </div>
     </div>

@@ -1,0 +1,72 @@
+<!-- ✅ Header -->
+<header class="navbar">
+    <div class="logo">Logo</div>
+
+    <nav class="menu">
+      <a
+        routerLink="/admin/home"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-home"></i> Home
+      </a>
+      <a
+        routerLink="/admin/manage-game"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-gamepad"></i> Manage Game
+      </a>
+      <a
+        routerLink="/admin/discount"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-tags"></i> Discount
+      </a>
+      <a
+        routerLink="/admin/business-history"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-rotate-left"></i> Business history
+      </a>
+    </nav>
+
+    <div class="logout" (click)="logout()">
+      <i class="fa fa-sign-out"></i> Logout
+    </div>
+  </header>
+
+<!-- ✅ Title -->
+<h2 class="page-title">
+  <a routerLink="/admin/discount" class="back-btn">‹</a>
+  Home
+</h2>
+
+<!-- ✅ Main Form -->
+<div class="add-container">
+  <div class="form-box">
+    <div class="form-header">เพิ่มโค้ดส่วนลด</div>
+
+    <form (ngSubmit)="addDiscount()" #discountForm="ngForm">
+      <label>โค้ด</label>
+      <input type="text" [(ngModel)]="code" name="code" required />
+
+      <label>ส่วนลด (%)</label>
+      <input type="number" [(ngModel)]="percent" name="percent" required />
+
+      <label>จำนวนคูปอง / ใบ</label>
+      <input type="number" [(ngModel)]="limit" name="limit" required />
+
+      <div class="btn-group">
+        <button type="submit" class="save-btn" [disabled]="!discountForm.valid">
+          บันทึก
+        </button>
+        <button type="button" class="cancel-btn" routerLink="/admin/discount">
+          ยกเลิก
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
