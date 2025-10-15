@@ -56,7 +56,6 @@ export class AdminHome implements OnInit, OnDestroy {
   ngOnDestroy() {
     clearInterval(this.slideInterval);
   }
-
   /** ✅ โหลดเกมทั้งหมดจาก games */
   async loadAllGames() {
     const querySnapshot = await getDocs(collection(this.firestore, 'games'));
