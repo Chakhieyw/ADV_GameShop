@@ -1,0 +1,166 @@
+.user-home-condtainer {
+  background: #f3f3f3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-bar {
+    
+  width: 100%;
+  height: 60px;
+  background: #e6e6e6;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 2px solid #0ea5e9;
+}
+
+.logo {
+  background: #ccc;
+  padding: 5px 15px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.barmenu {
+  margin-left: 10%;
+  display: flex;
+  justify-content: flex-start; /* ชิดซ้ายหรือ center ตามต้องการ */
+  align-items: center;
+  gap: 50px; /* เว้นระยะห่างระหว่างเมนู */
+  flex-wrap: nowrap; /* ไม่ให้ wrap ลงบรรทัดใหม่ */
+}
+
+.item-bar {
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #4caf50; /* เพิ่มเอฟเฟกต์ hover */
+  }
+}
+/////////////////////////////
+.game-detail-container {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+}
+
+/* Header */
+.header-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.back-btn {
+  font-size: 16px;
+  padding: 6px 12px;
+  border: none;
+  background-color: #d84343;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.game-name {
+  padding-left: 20px;
+  margin-top: 20px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #d84343;
+  margin-bottom: 20px;
+}
+
+/* Content row */
+.content-row {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* Left side: รูป + ราคา */
+.left-side {
+  flex: 1 1 600px;
+  padding-left: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.game-image-large {
+  width: 100%;
+  height: 450px;
+  object-fit: contain;    /* ครอบรูปให้เต็มกรอบโดยไม่ยืด/บีบ */
+  border-radius: 8px;
+  background-color: #e0e0e0; /* สีสำรองสำหรับรูปไม่มีภาพ */
+}
+
+
+.price-row {
+  display: flex;
+  justify-content: end;
+  gap: 30px;
+  align-items: center;
+
+}
+
+.price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.owned-label {
+  color: green;
+  font-weight: bold;
+}
+
+.buy-btn {
+  padding: 8px 16px;
+  font-size: 16px;
+  background-color: #d84343;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Right side: รายละเอียด */
+.right-side {
+  flex: 1 1 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.right-side h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #000000;
+}
+
+.detail-text {
+  font-size: 14px;
+  color: #000000;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .content-row {
+    flex-direction: column;
+  }
+  
+  .left-side, .right-side {
+    flex: 1 1 100%;
+  }
+}

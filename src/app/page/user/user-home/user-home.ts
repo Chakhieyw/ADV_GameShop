@@ -2,7 +2,7 @@ import { Component, signal, OnInit, computed } from '@angular/core';
 import { AuthService } from '../../../core/services/auth';
 import { Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
-import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, getDocs, onSnapshot, query, where } from '@angular/fire/firestore';
 import { CommonModule ,} from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
@@ -18,6 +18,7 @@ import { HistoryService } from '../../../core/services/history';
 })
 export class UserHome implements OnInit {
   user = signal<any>(null); // ข้อมูล user ล่าสุด
+  topGames = signal<any[]>([]);
   allGames = signal<any[]>([]); // เกมทั้งหมด
   totalGames = signal<string>('0.00'); // จำนวนเกมทั้งหมด
   fpsGames = signal<any[]>([]); // เกมแนว FPS
@@ -30,12 +31,12 @@ export class UserHome implements OnInit {
   discounts = signal<any[]>([]); // รายการคูปองจาก Firestore
   ownedGames = signal<any[]>([]); // เกมที่ผู้ใช้ซื้อแล้ว
   selectedDiscount = signal<any | null>(null); // คูปองที่เลือกไว้
-  cartItemsList: any[] = [];
   categories = ['Moba','Racing','RPG','FPS','Dungeon']; // ประเภทเกม
-  searchResults: any[] = [];   // ผลลัพธ์การค้นหา
+  searchResults = signal<any[]>([]);
   searchText: string = '';      // ชื่อเกม
   selectedType: string = '';    // ประเภทเกม
-  isSearching: boolean = false; // อยู่ในโหมดค้นหา
+  isSearching = signal(false);
+  
   
 
   constructor(
@@ -67,21 +68,37 @@ export class UserHome implements OnInit {
     this.showCart.set(false);
   }
 
-  ngOnInit() {
+ngOnInit() {
   this.init();
+
+  // โหลด cart จาก localStorage
+  const cartStr = localStorage.getItem('cartItems') || '[]';
+  const cart: any[] = JSON.parse(cartStr);
+  this.cartItems.set(cart);
+  // เช็คว่าให้เปิด dialog ทันทีไหม
+  const openDialog = localStorage.getItem('openCartDialog');
+  if (openDialog === 'true') {
+    this.showCart.set(true);
+    localStorage.removeItem('openCartDialog'); // เคลียร์ flag
+  }
 }
+
+
+
 
 async init() {
   await this.loadUser();      // รอให้ user โหลดเสร็จก่อน
   await this.loadOwnedGames(); // ตอนนี้ user() มีค่าแล้ว
   await this.loadGames();
   await this.loadDiscounts();
+  
 }
 
 
 
 // เรียกเมื่อกดปุ่ม Search
 performSearch() {
+  
   console.log(this.searchText);
   console.log(this.selectedType);
   
@@ -100,32 +117,39 @@ performSearch() {
     results = results.filter(g => g.type && g.type === this.selectedType);
   }
 
-  this.searchResults = results;
-  this.isSearching = true;
+  this.searchResults.set(results);
+  console.log(results);
+  console.log('searching good');
+  this.isSearching.set(true);
 }
-
 
 // ล้างผลการค้นหา
 clearSearch() {
   this.searchText = '';
   this.selectedType = '';
-  this.searchResults = [];
-  this.isSearching = false;
+  this.searchResults.set([]);
+  this.isSearching.set(false);
 }
 
-
-
 // โหลด discounts
-async loadDiscounts() {
-  try {
-    const querySnapshot = await getDocs(collection(this.firestore, 'discounts'));
+loadDiscounts() {
+  const q = query(
+    collection(this.firestore, 'discounts'),
+    where('status', '==', 'active')
+  );
+
+  onSnapshot(q, (snapshot) => {
     const list: any[] = [];
-    querySnapshot.forEach((snap) => list.push({ id: snap.id, ...snap.data() }));
-    this.discounts.set(list.filter(d => d.status === 'active')); // ใช้เฉพาะ active
-    console.log('Discounts loaded:', this.discounts());
-  } catch (err) {
-    console.error('Failed to load discounts', err);
-  }
+    snapshot.forEach((snap) => list.push({ id: snap.id, ...snap.data() }));
+
+    // กรองเฉพาะคูปองที่ยังไม่หมด
+    const available = list.filter(d => d.limit > 0);
+    this.discounts.set(available);
+
+    console.log('📢 Discounts updated:', available);
+  }, (err) => {
+    console.error('Failed to listen discounts', err);
+  });
 }
 
   // โหลดข้อมูล user ล่าสุดจาก Firestore
@@ -172,6 +196,15 @@ async loadDiscounts() {
       this.racingGames.set(list.filter(g => g.type === 'Racing'));
       this.dungeonGames.set(list.filter(g => g.type === 'Dungeon'));
 
+       // ✅ Top 5 เกมขายดี
+
+    const top = list
+      .sort((a, b) => (b.sold || 0) - (a.sold || 0))
+      .slice(0, 5);
+
+    this.topGames.set(top); // ✅ เก็บลง signal
+    console.log('5 อันดับเกมขายดี:', top);
+
       console.log('Games loaded:', list);
     } catch (err) {
       console.error('Failed to load games', err);
@@ -188,28 +221,32 @@ async loadDiscounts() {
   const games = this.allGames() || [];
   return games.filter(game => game.category === category);
 }
+
 // toggle เพิ่ม/ลบจากตะกร้า
 toggleCart(game: any) {
-  if (this.isGameOwned(game.id)) {
-    alert('คุณมีเกมนี้แล้ว ❌');
-    return;
-  }
-
   const current = this.cartItems();
   const exists = current.find(g => g.id === game.id);
+
+  let newCart;
   if (exists) {
-    this.cartItems.set(current.filter(g => g.id !== game.id));
+    newCart = current.filter(g => g.id !== game.id);
   } else {
-    this.cartItems.set([...current, game]);
+    newCart = [...current, game];
   }
+  this.cartItems.set(newCart);
+  // เซฟลง localStorage
+  localStorage.setItem('cartItems', JSON.stringify(newCart));
 }
+
 // ตรวจสอบว่าเกมอยู่ในตะกร้า
 isInCart(game: any) {
   return this.cartItems().some(g => g.id === game.id);
 }
 // ลบเกมจาก cart (dialog ใช้ trash)
 removeFromCart(game: any) {
-  this.cartItems.set(this.cartItems().filter(g => g.id !== game.id));
+  const newCart = this.cartItems().filter(g => g.id !== game.id);
+  this.cartItems.set(newCart);
+  localStorage.setItem('cartItems', JSON.stringify(newCart));
 }
 // คำนวณราคาทั้งหมด
 totalCartPrice = computed(() => 
@@ -242,9 +279,20 @@ async checkout() {
     return;
   }
 
+    // ตรวจสอบว่า user ใช้คูปองนี้ไปแล้วหรือยัง
+  if (this.selectedDiscount()) {
+    const usedBefore = await this.hasUserUsedCoupon(userData.uid, this.selectedDiscount().code);
+    console.log(this.selectedDiscount().code);  
+    if (usedBefore) {
+      alert(`ขออภัยคุณเคยใช้คูปอง ${this.selectedDiscount().code} ไปแล้ว ❌`);
+      return;
+    }
+  }
+
+
   // Confirm dialog
   const confirmMsg = this.selectedDiscount()
-    ? `คุณยืนยันที่จะซื้อเกมโดยใช้คูปอง ${this.selectedDiscount().code} หรือไม่?`
+    ? `!สามารถใช้ ${this.selectedDiscount().code} / 1 บัญชี เท่านั้น\nคุณยืนยันที่จะซื้อเกมโดยใช้คูปองหรือไม่? `
     : 'คุณยืนยันที่จะซื้อเกมนี้หรือไม่?';
 
   if (!confirm(confirmMsg)) {
@@ -304,6 +352,7 @@ async checkout() {
 
     // 4️⃣ รีเซ็ต cart และ discount
     this.cartItems.set([]);
+    localStorage.setItem('cartItems', JSON.stringify(this.cartItems()));
     this.selectedDiscount.set(null);
     this.closeCartDialog();
     console.log('Cart and discount reset');
@@ -336,6 +385,18 @@ discountAmount = computed(() => {
 // ราคาสุทธิอัตโนมัติ
 finalPrice = computed(() => this.cartItems().reduce((sum, g) => sum + g.price, 0) - this.discountAmount());
 
+  // ตรวจสอบว่า user เคยใช้คูปองนี้ไปแล้วหรือยัง
+  async hasUserUsedCoupon(userId: string, couponCode: string): Promise<boolean> {
+    try {
+      // ดึงประวัติทั้งหมดของ user นี้
+      const histories = await this.historyService.getUserHistory(userId);
+      // ตรวจว่ามี history ไหนใช้คูปองนี้ไหม
+      return histories.some((h: any) => h.usedcupon === couponCode);
+    } catch (err) {
+      console.error('Failed to check coupon usage', err);
+      return false;
+    }
+  }
 
 
   async onLogout() {

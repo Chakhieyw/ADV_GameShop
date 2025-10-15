@@ -9,6 +9,9 @@ import { AdminGuard } from './core/services/admin.guard';
 import { UserGuard } from './core/services/user.guard';
 import { AddGame } from './page/admin/add-game/add-game';
 import { EditGame } from './page/admin/edit-game/edit-game';
+import { GameLibrary } from './page/user/game-library/game-library';
+import { Component } from '@angular/core';
+import { GameDetailComponent } from './page/user/game-detail/game-detail';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -20,6 +23,10 @@ export const routes: Routes = [
   { path: 'admin/add-game', component: AddGame ,canActivate: [AdminGuard] },
   { path: 'admin/edit-game/:id', component: EditGame , canActivate: [AdminGuard] },
   { path: 'user/profile', component: Profile , canActivate: [UserGuard] },
+  { path: 'user/game-library', component: GameLibrary, canActivate: [UserGuard] },
+  { path: 'user/game-detail/:id', component: GameDetailComponent, canActivate: [UserGuard]},
+
+
 
   { path: '**', redirectTo: 'login' },
 ];

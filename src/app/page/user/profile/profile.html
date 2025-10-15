@@ -2,14 +2,14 @@
   <div class="logo-bar">
     <div class="logo">Logo</div>
     <div class="barmenu">
-      <div class="item-bar">
-        <i class="fas fa-home" [routerLink]="['/user/home']"></i> Home
+      <div class="item-bar" [routerLink]="['/user/home']">
+        <i class="fas fa-home"></i> Home
       </div>
-      <div class="item-bar">
-        <i class="fas fa-user" [routerLink]="['/user/profile']"></i> Profile
+      <div class="item-bar" [routerLink]="['/user/profile']">
+        <i class="fas fa-user"></i> Profile
       </div>
-      <div class="item-bar">
-        <i class="fas fa-gamepad" [routerLink]="['/user/game-library']"></i> Game Library
+      <div class="item-bar" [routerLink]="['/user/game-library']">
+        <i class="fas fa-gamepad"></i> Game Library
       </div>
       <div class="item-bar" (click)="onLogout()">
         <i class="fas fa-sign-out-alt"></i> Logout

@@ -1,0 +1,78 @@
+
+<div class="user-home-container">
+  <!-- โลโก้ -->
+  <div class="logo-bar">
+    <div class="logo">Logo</div>
+
+    <div class="barmenu">
+  <div class="item-bar" [routerLink]="['/user/home']">
+    <i class="fas fa-home"></i> Home
+  </div>
+ <div class="item-bar" [routerLink]="['/user/profile']">
+  <i class="fas fa-user"></i> Profile
+</div>
+
+  <div class="item-bar" [routerLink]="['/user/game-library']">
+    <i class="fas fa-gamepad"></i> Game Library
+  </div>
+  <div class="item-bar" (click)="onLogout()">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </div>
+</div>
+</div>
+
+
+<div class="game-detail-container" *ngIf="game(); else loading">
+  <!-- 🔹 แถวบนสุด -->
+  <div class="header-row">
+    <button class="back-btn" (click)="goBack()">← กลับ</button>
+    
+  </div>
+
+  <div class="game-name">{{ game().name }}</div>
+ <!-- 🔹 ส่วนเนื้อหาหลัก -->
+<div class="content-row">
+  <!-- ✅ ด้านซ้าย: รูปเกม + ราคา -->
+  <div class="left-side">
+    <img
+      [src]="game().imageUrl || 'https://via.placeholder.com/500x300?text=No+Image'"
+      class="game-image-large"
+    />
+
+    <div class="price-row">
+      <span class="price">ราคา : {{ game().price }} ฿</span>
+
+      <!-- แสดง owned label ถ้าเกมเป็นของผู้ใช้ -->
+      <span class="owned-label" *ngIf="isGameOwned(game().id)">
+        คุณเป็นเจ้าของเกมนี้แล้ว
+      </span>
+
+      <!-- ปุ่มซื้อ ถ้าเกมยังไม่ owned -->
+     <button class="buy-btn" *ngIf="!isGameOwned(game().id)"
+        (click)="addToCartAndReturn(game())">
+  ซื้อเกมนี้
+</button>
+    </div>
+  </div>
+
+  <!-- ✅ ด้านขวา: รายละเอียด -->
+  <div class="right-side">
+    <h3>รายละเอียด</h3>
+    <p class="detail-text">
+      {{ game().detail || 'ไม่มีรายละเอียดของเกมนี้' }}
+    </p>
+
+    <h3>ประเภท</h3>
+    <p>{{ game().type || 'ไม่ระบุประเภท' }}</p>
+
+    <h3>วันที่วางขาย</h3>
+    <p>{{ game().createdAt?.toDate() | date:'dd/MM/yyyy HH:mm' }}</p>
+  </div>
+</div>
+
+</div>
+<ng-template #loading>
+  <p>⏳ กำลังโหลดข้อมูลเกม...</p>
+</ng-template>
+
+
