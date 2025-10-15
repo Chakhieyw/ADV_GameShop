@@ -61,12 +61,12 @@
 
 <div class="space-start">
     <!-- ผลลัพธ์การค้นหา -->
-    <div *ngIf="isSearching">
+    <div *ngIf="isSearching()">
       <h2>ผลการค้นหา</h2>
-      <div *ngIf="searchResults.length > 0; else noResults">
+      <div *ngIf="searchResults().length > 0; else noResults" >
         <div class="games-grid">
-          <div *ngFor="let game of searchResults" class="game-card">
-            <div class="game-image-wrapper">
+          <div *ngFor="let game of searchResults()" class="game-card">
+            <div class="game-image-wrapper" [routerLink]="['/user/game-detail', game.id]">
             <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
             <div class="game-info-overlay">
               <h4>{{ game.name }}</h4>
@@ -91,15 +91,38 @@
 </div>
 
 <!-- 🎮 โหมดปกติ แยกประเภท -->
-<div *ngIf="!isSearching">
+<div *ngIf="!isSearching()">
 <div class="space-start">
+
+  <h2>Top 5 games best selling</h2>
+    <div class="games-grid" *ngIf="topGames().length > 0; else nogames" >
+        <div class="game-card" *ngFor="let game of topGames()">
+                <div class="game-image-wrapper" [routerLink]="['/user/game-detail', game.id]">
+            <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
+            <div class="game-info-overlay" [routerLink]="['/user/game-detail', game.id]">
+              <h4>{{ game.name }}</h4>
+              <p>฿ {{ game.price }}</p>
+            </div>
+          </div>
+          <button *ngIf="!isGameOwned(game.id)"
+                  class="add-cart-btn"
+                  [class.selected]="isInCart(game)"
+                  (click)="toggleCart(game)">
+            <i class="fas" [ngClass]="{'fa-shopping-cart': !isInCart(game), 'fa-check': isInCart(game)}"></i>
+          </button>
+          <span class="owned-label" *ngIf="isGameOwned(game.id)">มีแล้ว</span>
+        </div>
+      </div>
+  <ng-template #nogames>ยังไม่มีเกมประเภทนี้วางขาย</ng-template>
+
+
   <!-- FPS -->
   <h2>FPS First-Person Shooter Games</h2>
   <div class="games-grid" *ngIf="fpsGames().length > 0; else nogames">
     <div class="game-card" *ngFor="let game of fpsGames()">
             <div class="game-image-wrapper">
         <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
-        <div class="game-info-overlay">
+        <div class="game-info-overlay" [routerLink]="['/user/game-detail', game.id]">
           <h4>{{ game.name }}</h4>
           <p>฿ {{ game.price }}</p>
         </div>
@@ -121,7 +144,7 @@
       <div class="game-card" *ngFor="let game of rpgGames()">
         <div class="game-image-wrapper">
     <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
-    <div class="game-info-overlay">
+    <div class="game-info-overlay" [routerLink]="['/user/game-detail', game.id]">
       <h4>{{ game.name }}</h4>
       <p>฿ {{ game.price }}</p>
     </div>
@@ -141,7 +164,7 @@
     <h2>Racing Games</h2>
     <div class="games-grid" *ngIf="racingGames().length > 0; else nogames">
       <div class="game-card" *ngFor="let game of racingGames()">
-        <div class="game-image-wrapper">
+        <div class="game-image-wrapper" [routerLink]="['/user/game-detail', game.id]">
     <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
     <div class="game-info-overlay">
       <h4>{{ game.name }}</h4>
@@ -163,7 +186,7 @@
     <h2>Moba Games</h2>
     <div class="games-grid" *ngIf="mobaGames().length > 0; else nogames">
       <div class="game-card" *ngFor="let game of mobaGames()">
-        <div class="game-image-wrapper">
+        <div class="game-image-wrapper" [routerLink]="['/user/game-detail', game.id]">
     <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
     <div class="game-info-overlay">
       <h4>{{ game.name }}</h4>
@@ -185,7 +208,7 @@
     <h2>Dungeon Games</h2>
     <div class="games-grid" *ngIf="dungeonGames().length > 0; else nogames">
       <div class="game-card" *ngFor="let game of dungeonGames()">
-        <div class="game-image-wrapper">
+        <div class="game-image-wrapper" [routerLink]="['/user/game-detail', game.id]">
     <img [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'" class="game-image" />
     <div class="game-info-overlay">
       <h4>{{ game.name }}</h4>

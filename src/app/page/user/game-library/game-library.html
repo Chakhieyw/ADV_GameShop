@@ -1,0 +1,50 @@
+<div class="user-home-container">
+  <!-- โลโก้ -->
+  <div class="logo-bar">
+    <div class="logo">Logo</div>
+
+    <div class="barmenu">
+  <div class="item-bar" [routerLink]="['/user/home']">
+    <i class="fas fa-home"></i> Home
+  </div>
+ <div class="item-bar" [routerLink]="['/user/profile']">
+  <i class="fas fa-user"></i> Profile
+</div>
+
+  <div class="item-bar" [routerLink]="['/user/game-library']">
+    <i class="fas fa-gamepad"></i> Game Library
+  </div>
+  <div class="item-bar" (click)="onLogout()">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </div>
+</div>
+</div>
+
+<div class="space-start">
+    <h2>🎮 My Games (มีทั้งหมด {{ myGames().length }} เกม)</h2>
+  
+
+  <div *ngIf="loading(); else gameList">กำลังโหลดข้อมูล...</div>
+
+  <ng-template #gameList>
+    <div *ngIf="myGames().length > 0; else noGames" class="games-grid">
+      <div class="game-card" *ngFor="let game of myGames()">
+        <div class="game-image-wrapper">
+          <img
+            [src]="game.imageUrl || 'https://via.placeholder.com/200x260?text=No+Image'"
+            class="game-image"
+          />
+          <div class="game-info-overlay">
+            <h4>{{ game.name }}</h4>
+            <button class="detail-btn" (click)="viewDetail(game)">ดูรายละเอียด</button>
+          </div>
+        </div>
+        <span class="owned-label">มีแล้ว</span>
+      </div>
+    </div>
+
+    <ng-template #noGames>
+      <p>คุณยังไม่มีเกมในคลัง</p>
+    </ng-template>
+  </ng-template>
+</div>

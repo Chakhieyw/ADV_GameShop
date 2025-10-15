@@ -31,6 +31,7 @@ export class HistoryService {
     note: data.discountUsed
       ? `ซื้อเกม ${data.gameName} โดยใช้คูปอง ${data.discountUsed}`
       : `ซื้อเกม ${data.gameName}`,
+    usedcupon: data.discountUsed,
     timestamp: serverTimestamp(),
   });
 }
