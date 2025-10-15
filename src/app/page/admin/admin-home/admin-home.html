@@ -22,25 +22,6 @@
 </header>
 
 <div class="page-container">
-  <!-- 🔍 Search bar -->
-  <section class="search-section">
-    <div class="search-box">
-      <input
-        type="text"
-        placeholder="ค้นหาชื่อเกม"
-        [(ngModel)]="searchText"
-        (input)="applyFilter()"
-      />
-      <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
-        <option value="">ประเภทของเกม</option>
-        <option *ngFor="let c of categories" [value]="c.name">
-          {{ c.name }}
-        </option>
-      </select>
-      <button (click)="applyFilter()"><i class="fa fa-search"></i></button>
-    </div>
-  </section>
-
   <!-- 🖼 Carousel -->
   <section class="carousel" *ngIf="slides.length > 0">
     <button class="nav prev" (click)="prevSlide()">‹</button>

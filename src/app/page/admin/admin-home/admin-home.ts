@@ -4,6 +4,7 @@ import {
   OnDestroy,
   ChangeDetectorRef,
   NgZone,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -35,14 +36,17 @@ export class AdminHome implements OnInit, OnDestroy {
     if (!this.auth.isLoggedIn()) this.router.navigate(['/login']);
   }
 
-  allGames: any[] = [];
+  allGames = signal<any[]>([]);
   categories: { name: string; games: any[] }[] = [];
   topGames: any[] = [];
   slides: any[] = [];
   currentSlide = 0;
   slideInterval: any;
   searchText = '';
+  selectedType: string = '';
   selectedCategory = '';
+  searchResults: any[] = []; // ผลลัพธ์การค้นหา
+  isSearching = false;
 
   async ngOnInit() {
     await this.loadAllGames(); // โหลดเกมทั้งหมด
@@ -61,7 +65,7 @@ export class AdminHome implements OnInit, OnDestroy {
     const querySnapshot = await getDocs(collection(this.firestore, 'games'));
     const list: any[] = [];
     querySnapshot.forEach((snap) => list.push({ id: snap.id, ...snap.data() }));
-    this.allGames = list;
+    this.allGames.set(list);
 
     // ✅ Group ตามประเภท
     const grouped: { [key: string]: any[] } = {};
@@ -75,7 +79,6 @@ export class AdminHome implements OnInit, OnDestroy {
       games: grouped[key],
     }));
   }
-
   /** ✅ โหลด 5 อันดับเกมขายดีจาก mygames */
   async loadTopGamesFromMyGames() {
     try {
@@ -126,8 +129,8 @@ export class AdminHome implements OnInit, OnDestroy {
     const text = this.searchText.toLowerCase();
     const cat = this.selectedCategory;
     this.categories.forEach((c) => {
-      c.games = this.allGames.filter(
-        (g) =>
+      c.games = this.allGames().filter(
+        (g: { name: string; type: string }) =>
           (!text || g.name.toLowerCase().includes(text)) &&
           (!cat || g.type === cat)
       );
