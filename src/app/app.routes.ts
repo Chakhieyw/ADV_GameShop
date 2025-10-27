@@ -14,7 +14,8 @@ import { Component } from '@angular/core';
 import { GameDetailComponent } from './page/user/game-detail/game-detail';
 import { DiscountPage } from './page/admin/discount/discount';
 import { DetailGamePage } from './page/admin/detail-game/detail-game';
-
+import { HistoryAdmin } from './page/admin/history-admin/history-admin';
+import { EditDiscountPage } from './page/admin/edit-discount/edit-discount';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -41,6 +42,16 @@ export const routes: Routes = [
   {
     path: 'admin/discount',
     component: DiscountPage,
+    canActivate: [AdminGuard],
+  },
+  {
+    path: 'admin/edit-discount/:id',
+    component: EditDiscountPage,
+    canActivate: [AdminGuard],
+  },
+  {
+    path: 'admin/history-admin',
+    component: HistoryAdmin,
     canActivate: [AdminGuard],
   },
   { path: 'user/profile', component: Profile, canActivate: [UserGuard] },

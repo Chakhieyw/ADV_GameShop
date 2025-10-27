@@ -167,4 +167,8 @@ export class AdminHome implements OnInit, OnDestroy {
       this.cdr.detectChanges();
     });
   }
+  async logout() {
+    await this.auth.logout();
+    this.router.navigate(['/login']);
+  }
 }

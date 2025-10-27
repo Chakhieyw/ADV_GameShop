@@ -1,22 +1,38 @@
-<header class="header">
-  <div class="left"><div class="logo">Logo</div></div>
+<header class="navbar">
+  <div class="logo">Logo</div>
 
   <nav class="menu">
-    <a routerLink="/admin/home" routerLinkActive="active"
-      ><i class="fa fa-home"></i> Home</a
+    <a
+      routerLink="/admin/home"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
     >
-    <a routerLink="/admin/manage-game" routerLinkActive="active"
-      ><i class="fa fa-gamepad"></i> Manage Game</a
+      <i class="fa fa-home"></i> Home
+    </a>
+    <a
+      routerLink="/admin/manage-game"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
     >
-    <a routerLink="/admin/discount" routerLinkActive="active"
-      ><i class="fa fa-tags"></i> Discount</a
+      <i class="fa fa-gamepad"></i> Manage Game
+    </a>
+    <a
+      routerLink="/admin/discount"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
     >
-    <a routerLink="/admin/history-admin" routerLinkActive="active"
-      ><i class="fa fa-rotate-left"></i> History</a
+      <i class="fa fa-tags"></i> Discount
+    </a>
+    <a
+      routerLink="/admin/history-admin"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
     >
+      <i class="fa fa-rotate-left"></i> Business history
+    </a>
   </nav>
 
-  <div class="logout" (click)="onLogout()">
+  <div class="logout" (click)="logout()">
     <i class="fa fa-sign-out"></i> Logout
   </div>
 </header>

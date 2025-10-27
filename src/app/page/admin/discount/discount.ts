@@ -52,6 +52,11 @@ export class DiscountPage implements OnInit {
           status: 'inactive',
         });
         item.status = 'inactive'; // อัปเดตในหน้า UI ด้วย
+      } else if (item.limit > 0 && item.status === 'inactive') {
+        await updateDoc(doc(this.firestore, 'discounts', item.id), {
+          status: 'active',
+        });
+        item.status = 'active'; // อัปเดตในหน้า UI ด้วย
       }
     }
 
